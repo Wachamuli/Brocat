@@ -9,7 +9,7 @@ class CreateAccountForm(FlaskForm):
             InputRequired('E-mail field is required.'),
             Email('Invalid e-mail address.'),
             Regexp(
-                regex=r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                regex=r'[^@]+@[^@]+\.[a-zA-Z]{2,6}',
                 message='Use this format your e-mail address someone@example.com.'
             )
         ]
@@ -18,7 +18,7 @@ class CreateAccountForm(FlaskForm):
         label='Username',
         validators=[
             InputRequired('Username field is required'),
-            Length(max=16, message="The username must be less than 16 characters.")
+            Length(max=16, message="The username must be less or equal to 16 characters.")
         ]
     )
     password = PasswordField(

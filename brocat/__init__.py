@@ -1,6 +1,12 @@
 from flask import Flask
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = r'b$2b$12$j7IQog.NYRWgjfRB4j5Fxu'
+
+if app.config['ENV'] == 'development':
+    app.config.from_object('config.DevelopmentConfig')
+elif app.config['ENV'] == 'production':
+    app.config.from_object('config.ProductionConfig')
+else:
+    app.config.from_object('config.TestingConfig')
 
 import brocat.views

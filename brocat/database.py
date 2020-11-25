@@ -8,6 +8,7 @@ engine = create_engine(
 )
 db_session = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
 Base = declarative_base()
+Base.query = db_session.query_property()
 
 def init_db():
     import brocat.models

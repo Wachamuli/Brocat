@@ -9,13 +9,13 @@ class Users(Base):
     id = Column(Integer, primary_key=True)
     e_mail = Column(String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
-    password = Column(String(length=16, convert_unicode=True), nullable=False)
+    password = Column(String(16), nullable=False)
 
-    def __init__(self, usr, email, psw):
-        self.username = usr
+    def __init__(self, email, usr, psw):
         self.e_mail = email
+        self.username = usr
         self.password = Users.hash_pw(psw)
 
     @classmethod
-    def hash_pw(self, psw):
+    def hash_pw(cls, psw):
         return hashpw(psw.encode('UTF-8'), gensalt(10))
