@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length
 
+
 class CreateAccountForm(FlaskForm):
     email = StringField(
         label='Email',
@@ -34,3 +35,4 @@ class CreateAccountForm(FlaskForm):
         ]
     )
     confirm_password = PasswordField(label='Confirm Password') 
+    
