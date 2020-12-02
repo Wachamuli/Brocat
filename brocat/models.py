@@ -1,10 +1,11 @@
 from sqlalchemy import Column, String, Integer
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask_login import UserMixin
+from bcrypt  import hashpw, checkpw, gensalt
 
 from brocat.database import Base
 
 
-class Users(Base):
+class Users(Base, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -19,10 +20,10 @@ class Users(Base):
 
     @staticmethod
     def hash_pw(psw):
-        return generate_password_hash(psw.encode('UTF-8'))
+        return hashpw(psw.encode('UTF-8'), gensalt())
 
     def check_psw(self, psw):
-        return check_password_hash(self.password, psw.encode('UTF-8'))
+        return checkpw(psw.encode('UTF-8'), self.password)
 
     def __repr__(self):
         return self.username

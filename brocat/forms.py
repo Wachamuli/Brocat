@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, FileField, TextAreaField
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length
 
 
@@ -34,5 +34,28 @@ class CreateAccountForm(FlaskForm):
             )
         ]
     )
-    confirm_password = PasswordField(label='Confirm Password') 
+    confirm_password = PasswordField(label='Confirm Password',
+        validators=[InputRequired('Confirm your password.')]
+    ) 
     
+
+class LoginForm(FlaskForm):
+    username = StringField(label='Username', 
+        validators=[InputRequired('Username field is required')]
+    )
+    password = PasswordField(label='Password',
+        validators=[InputRequired('Password field is requiered')]
+    )
+
+
+class UploadBrocatForm(FlaskForm):
+    title = StringField(
+        label='Title',
+        validators=[
+            InputRequired('The Brocat needs a title!'),
+            Length(max=100, message='100 is the maximum characters for a title')
+        ]
+    )
+    thumbnail = FileField(label='Thuumbnail')
+    audio = FileField(label='Audio', validators=[InputRequired('We need your Brocat here!')])
+    description = TextAreaField(label='Description')

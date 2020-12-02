@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+</head>
+
+<body>
+    <header>
+        <h1>Create Account</h1>
+    </header>
+
+    <nav>
+
+    </nav>
+    <section>
+        <div>
+            <form action="/create_account" method="POST" novalidate>
+                {{form.csrf_token}}
+                <div>
+                    <div>
+                        {{form.email}}
+                        {%for error in form.email.errors%}
+                        <label for="">{{error}}</label>
+                        {%endfor%}
+                    </div>
+                    <div>
+                        {{form.username}}
+                        {%for error in form.username.errors%}
+                        <label for="">{{error}}</label>
+                        {%endfor%}
+                    </div>
+                    <div>
+                        {{form.password}}
+                        {%for error in form.password.errors%}
+                        <label for="">{{error}}</label>
+                        {%endfor%}
+                    </div>
+                    {{form.confirm_password}}
+                </div>
+                <div>
+                    <button type="button" onclick="window.location='/'">Cancel</button>
+                    <button type="submit">Accept</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+
+</html>
