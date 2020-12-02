@@ -7,6 +7,8 @@ class Config(object):
     SESSION_COOKIE_SECURE = True
     DEBUG = False
 
+    USE_SESSION_FOR_NEXT = False
+    
     UPLOADS_FOLDER = None
     IMAGES_FOLDER = None
     AUDIOS_FOLDER = None
@@ -14,11 +16,14 @@ class Config(object):
     ALLOWED_AUDIOS_EXTENSIONS = None
 
 
+
 class DevelopmentConfig(Config):
     ENV = 'development'
     SECRET_KEY = 'Yep_this_supose_to_be_a_secret'
     SESSION_COOKIE_SECURE = False
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(days=1)
+
+    USE_SESSION_FOR_NEXT = True
 
     UPLOADS_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads'
     IMAGES_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads/images'

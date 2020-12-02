@@ -1,36 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
+
 <body>
     <header>
         <h1>Login</h1>
     </header>
+
     <section>
+        <div>
+            {%with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
         <div>
             <form action="/login" method="POST" novalidate>
                 {{form.csrf_token}}
                 <div>
-                    {{form.username}}
-                    {%for error in form.username.errors%}
-                    <label for="">{{error}}</label>
-                    {%endfor%}
+                    {{ form.username(placeholder="Username") }}
+                    {% for error in form.username.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
                 </div>
                 <div>
-                    {{form.password}}
-                    {%for error in form.password.errors%}
-                    <label for="">{{error}}</label>
-                    {%endfor%}
+                    {{ form.password(placeholder="Password") }}
+                    {% for error in form.password.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.remember.label }}{{ form.remember }}
                 </div>
                 <div>
                     <button type="button" onclick="window.location='/'">Cancel</button>
                     <button type="submit">Accept</button>
                 </div>
-                </form>
-            </div>
+            </form>
+        </div>
+        <label for="">Not a member yet? <a href="/create_account">Create an account</a></label>
     </section>
 </body>
-</html>l
+
+</html>

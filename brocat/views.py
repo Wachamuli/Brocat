@@ -1,9 +1,10 @@
 import os
 
 from flask import render_template, redirect, url_for, \
-    flash
+    flash, session, request
 from flask_login import login_user, login_required, logout_user, \
-    current_user, AnonymousUserMixin
+    current_user
+from urllib.parse import urlparse, urljoin
 
 from brocat import app, login_manager
 from brocat.database import db_session
@@ -34,7 +35,6 @@ def create_account():
         try:
             db_session.add(new_user)
             db_session.commit()
-            flash('Account created, now login')
             return redirect(url_for('login'))
         except:
             db_session.rollback()
@@ -43,20 +43,35 @@ def create_account():
     return render_template('create_account.html', form=form)
 
 
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+        ref_url.netloc == test_url.netloc
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    session['next'] = request.args.get('next')
+
     if form.validate_on_submit():
         username = form.username.data
         psw = form.password.data
+        remember = form.remember.data
         user_exists = Users.query.filter_by(username=username).first()
 
         if user_exists and user_exists.check_psw(psw):
-            login_user(user_exists)
-            url_for('my_profile', username=username)
+            login_user(user_exists, remember=remember)
+            flash('Logged succesfully.')
+            if 'next' in session:
+                next = session['next']
+                if is_safe_url(next):
+                    return redirect(next)
+
             return redirect('/')
-        else:
-            return 'Invalid username or password.'
+
+        return 'Invalid username or password.'
 
     return render_template('login.html', form=form)
 
@@ -71,13 +86,13 @@ def load_user(user_id):
 def logout():
     logout_user()
     flash('Logout successfully')
-    return redirect('/')
+    return redirect('/login')
 
 
-@app.route('/<username>')
+@app.route('/home')
 @login_required
-def my_profile(username):
-    return f'This is your profile, {username}'
+def my_profile():
+    return f'<h1>This is your profile, {current_user}</h1>'
 
 
 def validate_format(filename, allowed_extensions):
@@ -85,9 +100,9 @@ def validate_format(filename, allowed_extensions):
         filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 
-@app.route('/<username>/upload_podcast', methods=['GET', 'POST'])
+@app.route('/home/upload_podcast', methods=['GET', 'POST'])
 @login_required
-def upload_podcast(username):
+def upload_podcast():
     img_folder = app.config['IMAGES_FOLDER']
     img_extensions = app.config['ALLOWED_IMAGES_EXTENSIONS']
     aud_folder = app.config['AUDIOS_FOLDER']
@@ -98,3 +113,13 @@ def upload_podcast(username):
     # if form.validate_on_submit():
 
     return 'This is the upload page'
+
+
+# @login_manager.unauthorized_handler
+# def unauthorized():
+#     pass
+
+
+# @app.errorhandler(404)
+# def error():
+#     pass

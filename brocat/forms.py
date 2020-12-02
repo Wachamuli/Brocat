@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, FileField, TextAreaField
+from wtforms import StringField, PasswordField, FileField, TextAreaField, \
+    BooleanField
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length
 
 
@@ -46,6 +47,8 @@ class LoginForm(FlaskForm):
     password = PasswordField(label='Password',
         validators=[InputRequired('Password field is requiered')]
     )
+    remember = BooleanField(label='Remember me?')
+
 
 
 class UploadBrocatForm(FlaskForm):

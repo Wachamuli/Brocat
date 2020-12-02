@@ -21,24 +21,24 @@
                 {{form.csrf_token}}
                 <div>
                     <div>
-                        {{form.email}}
-                        {%for error in form.email.errors%}
-                        <label for="">{{error}}</label>
-                        {%endfor%}
+                        {{ form.email(placeholder="Email") }}
+                        {% for error in form.email.errors %}
+                        <label for="">{{ error }}</label>
+                        {% endfor %}
                     </div>
                     <div>
-                        {{form.username}}
-                        {%for error in form.username.errors%}
-                        <label for="">{{error}}</label>
-                        {%endfor%}
+                        {{ form.username(placeholder="Username") }}
+                        {% for error in form.username.errors %}
+                        <label for="">{{ error }}</label>
+                        {% endfor %}
                     </div>
                     <div>
-                        {{form.password}}
-                        {%for error in form.password.errors%}
-                        <label for="">{{error}}</label>
-                        {%endfor%}
+                        {{ form.password(placeholder="Password") }}
+                        {% for error in form.password.errors %}
+                        <label for="">{{ error }}</label>
+                        {% endfor %}
                     </div>
-                    {{form.confirm_password}}
+                    {{ form.confirm_password(placeholder="Confirm Password") }}
                 </div>
                 <div>
                     <button type="button" onclick="window.location='/'">Cancel</button>
@@ -46,6 +46,7 @@
                 </div>
             </form>
         </div>
+        <label for="">Already have an account? <a href="/login">Login</a></label>
     </section>
 </body>
 
