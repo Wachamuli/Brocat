@@ -9,21 +9,26 @@ class Users(Base, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    e_mail = Column(String(30), nullable=False, unique=True)
+    e_mail = Column('e-mail', String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
-    password = Column(String(16), nullable=False)
+    __password = Column('password',String(16), nullable=False)
 
-    def __init__(self, email, usr, psw):
+    def __init__(self, email, username, password):
         self.e_mail = email
-        self.username = usr
-        self.password = Users.hash_psw(psw)
+        self.username = username
+        self.password = password
 
-    @staticmethod
-    def hash_psw(psw):
-        return hashpw(psw.encode(), gensalt())
+    @property
+    def password(self):
+        return self.__password
+
+    @password.setter
+    def password(self, value):
+        hashed_psw = hashpw(value.encode('UTF-8'), gensalt())
+        self.__password = hashed_psw
 
     def check_psw(self, psw):
-        return checkpw(psw.encode('UTF-8'), self.password)
+        return checkpw(psw.encode('UTF-8'), self.__password)
 
     def __repr__(self):
         return self.username

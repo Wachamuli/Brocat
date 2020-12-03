@@ -42,12 +42,14 @@ class CreateAccountForm(FlaskForm):
         validators=[InputRequired('Confirm your password.')]
     ) 
 
-    def validate_email(self, email):
-        if Users.query.filter_by(e_mail=email.data).first():
+    def validate_email(form, email):
+        email_exists = Users.query.filter_by(e_mail=email.data).first()
+        if email_exists:
             raise ValidationError('Email already exists')
     
-    def validate_username(self, username):
-        if Users.query.filter_by(username=username.data).first():
+    def validate_username(form, username):
+        user_exists = Users.query.filter_by(username=username.data).first() 
+        if user_exists:
             raise ValidationError('Username already exists')
 
 

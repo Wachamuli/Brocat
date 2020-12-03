@@ -79,8 +79,8 @@ def load_user(user_id):
 @app.route('/logout')
 @login_required
 def logout():
-    logout_user()
     flash('Logout successfully')
+    logout_user()
     return redirect('/login')
 
 
