@@ -38,7 +38,12 @@
                         <label for="">{{ error }}</label>
                         {% endfor %}
                     </div>
-                    {{ form.confirm_password(placeholder="Confirm Password") }}
+                    <div>
+                        {{ form.confirm_password(placeholder="Confirm Password") }}
+                        {% for error in form.confirm_password.errors%}
+                        <label for="">{{ error }}</label>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div>
                     <button type="button" onclick="window.location='/'">Cancel</button>

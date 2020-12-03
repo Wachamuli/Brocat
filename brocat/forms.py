@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, FileField, TextAreaField, \
     BooleanField
-from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length
+from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length, \
+    ValidationError
+
+from brocat.models import Users
 
 
 class CreateAccountForm(FlaskForm):
@@ -38,7 +41,15 @@ class CreateAccountForm(FlaskForm):
     confirm_password = PasswordField(label='Confirm Password',
         validators=[InputRequired('Confirm your password.')]
     ) 
+
+    def validate_email(self, email):
+        if Users.query.filter_by(e_mail=email.data).first():
+            raise ValidationError('Email already exists')
     
+    def validate_username(self, username):
+        if Users.query.filter_by(username=username.data).first():
+            raise ValidationError('Username already exists')
+
 
 class LoginForm(FlaskForm):
     username = StringField(label='Username', 
@@ -48,7 +59,6 @@ class LoginForm(FlaskForm):
         validators=[InputRequired('Password field is requiered')]
     )
     remember = BooleanField(label='Remember me?')
-
 
 
 class UploadBrocatForm(FlaskForm):

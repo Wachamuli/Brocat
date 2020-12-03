@@ -19,18 +19,13 @@ def index():
 
 @app.route('/create_account', methods=['GET', 'POST'])
 def create_account():
-    form = CreateAccountForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        user = form.username.data
-        psw = form.password.data
-
-        if Users.query.filter_by(username=user).first():
-            return 'This user already exists'
-        if Users.query.filter_by(e_mail=email).first():
-            return 'This email already exsts'
-
-        new_user = Users(email, user, psw)
+    ca_form = CreateAccountForm()
+    if ca_form.validate_on_submit():
+        new_user = Users(
+            ca_form.email.data, 
+            ca_form.username.data, 
+            ca_form.password.data
+        )
 
         try:
             db_session.add(new_user)
@@ -40,40 +35,40 @@ def create_account():
             db_session.rollback()
             return 'Error in the db'
 
-    return render_template('create_account.html', form=form)
+    return render_template('create_account.html', form=ca_form)
 
 
-def is_safe_url(target):
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and \
-        ref_url.netloc == test_url.netloc
+# def is_safe_url(target):
+#     ref_url = urlparse(request.host_url)
+#     test_url = urlparse(urljoin(request.host_url, target))
+#     return test_url.scheme in ('http', 'https') and \
+#         ref_url.netloc == test_url.netloc
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    session['next'] = request.args.get('next')
+    log_form = LoginForm()
+    # session['next'] = request.args.get('next')
 
-    if form.validate_on_submit():
-        username = form.username.data
-        psw = form.password.data
-        remember = form.remember.data
+    if log_form.validate_on_submit():
+        username = log_form.username.data
+        psw = log_form.password.data
+        remember = log_form.remember.data
+
         user_exists = Users.query.filter_by(username=username).first()
-
         if user_exists and user_exists.check_psw(psw):
             login_user(user_exists, remember=remember)
             flash('Logged succesfully.')
-            if 'next' in session:
-                next = session['next']
-                if is_safe_url(next):
-                    return redirect(next)
+            # if 'next' in session:
+            #     next = session['next']
+            #     if is_safe_url(next):
+            #         return redirect(next)
 
             return redirect('/')
 
         return 'Invalid username or password.'
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=log_form)
 
 
 @login_manager.user_loader

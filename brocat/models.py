@@ -16,11 +16,11 @@ class Users(Base, UserMixin):
     def __init__(self, email, usr, psw):
         self.e_mail = email
         self.username = usr
-        self.password = Users.hash_pw(psw)
+        self.password = Users.hash_psw(psw)
 
     @staticmethod
-    def hash_pw(psw):
-        return hashpw(psw.encode('UTF-8'), gensalt())
+    def hash_psw(psw):
+        return hashpw(psw.encode(), gensalt())
 
     def check_psw(self, psw):
         return checkpw(psw.encode('UTF-8'), self.password)
