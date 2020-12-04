@@ -8,13 +8,12 @@ class Config(object):
     DEBUG = False
 
     USE_SESSION_FOR_NEXT = False
-    
+
     UPLOADS_FOLDER = None
     IMAGES_FOLDER = None
     AUDIOS_FOLDER = None
     ALLOWED_IMAGES_EXTENSIONS = None
     ALLOWED_AUDIOS_EXTENSIONS = None
-
 
 
 class DevelopmentConfig(Config):
@@ -30,6 +29,7 @@ class DevelopmentConfig(Config):
     AUDIOS_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads/audios'
     ALLOWED_IMAGES_EXTENSIONS = {'jpg', 'jpeg', 'svg', 'png'}
     ALLOWED_AUDIOS_EXTENSIONS = {'mp3', 'wav', 'ogg', 'oga', 'flac'}
+    DEFAULT_BROCAT_IMAGE = '/home/wachadev/Programming/Python/brocat/brocat/uploads/images/default.png'
 
 
 class ProductionConfig(Config):

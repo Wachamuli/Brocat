@@ -1,14 +1,14 @@
 import os
 
 from flask import render_template, redirect, url_for, \
-    flash, session, request
+    flash
 from flask_login import login_user, login_required, logout_user, \
     current_user
-from urllib.parse import urlparse, urljoin
+from werkzeug.utils import secure_filename
 
 from brocat import app, login_manager
 from brocat.database import db_session
-from brocat.models import Users
+from brocat.models import Users, Brocat
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 
@@ -22,8 +22,8 @@ def create_account():
     ca_form = CreateAccountForm()
     if ca_form.validate_on_submit():
         new_user = Users(
-            ca_form.email.data, 
-            ca_form.username.data, 
+            ca_form.email.data,
+            ca_form.username.data,
             ca_form.password.data
         )
 
@@ -38,17 +38,9 @@ def create_account():
     return render_template('create_account.html', form=ca_form)
 
 
-# def is_safe_url(target):
-#     ref_url = urlparse(request.host_url)
-#     test_url = urlparse(urljoin(request.host_url, target))
-#     return test_url.scheme in ('http', 'https') and \
-#         ref_url.netloc == test_url.netloc
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     log_form = LoginForm()
-    # session['next'] = request.args.get('next')
 
     if log_form.validate_on_submit():
         username = log_form.username.data
@@ -59,10 +51,6 @@ def login():
         if user_exists and user_exists.check_psw(psw):
             login_user(user_exists, remember=remember)
             flash('Logged succesfully.')
-            # if 'next' in session:
-            #     next = session['next']
-            #     if is_safe_url(next):
-            #         return redirect(next)
 
             return redirect('/')
 
@@ -90,24 +78,43 @@ def my_profile():
     return f'<h1>This is your profile, {current_user}</h1>'
 
 
-def validate_format(filename, allowed_extensions):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in allowed_extensions
-
-
-@app.route('/home/upload_podcast', methods=['GET', 'POST'])
+@app.route('/home/upload_brocat', methods=['GET', 'POST'])
 @login_required
-def upload_podcast():
+def upload_brocat():
     img_folder = app.config['IMAGES_FOLDER']
-    img_extensions = app.config['ALLOWED_IMAGES_EXTENSIONS']
     aud_folder = app.config['AUDIOS_FOLDER']
-    aud_extensions = app.config['ALLOWED_AUDIOS_EXTENSIONS']
 
-    form = UploadBrocatForm()
+    upload_form = UploadBrocatForm()
+    if upload_form.validate_on_submit():
+        title = upload_form.title.data
+        thumbnail = upload_form.thumbnail.data
+        audio = upload_form.audio.data
+        description = upload_form.description.data
 
-    # if form.validate_on_submit():
+        thumbnail_filename = secure_filename(thumbnail.filename)
+        audio_filename = secure_filename(audio.filename)
 
-    return 'This is the upload page'
+        thumb_path = os.path.join(img_folder, thumbnail_filename)
+        aud_path = os.path.join(aud_folder, audio_filename)
+        thumbnail.save(thumb_path)
+        audio.save(aud_path)
+
+        new_brocat = Brocat(
+            title,
+            thumb_path,
+            aud_path,
+            description
+        )
+
+        try:
+            db_session.add(new_brocat)
+            db_session.commit()
+            return 'Uploaded'
+        except:
+            db_session.rollback()
+            return 'Error in the db'
+
+    return render_template('upload_brocat.html', form=upload_form)
 
 
 # @login_manager.unauthorized_handler

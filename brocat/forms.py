@@ -4,7 +4,40 @@ from wtforms import StringField, PasswordField, FileField, TextAreaField, \
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length, \
     ValidationError
 
+from brocat import app
 from brocat.models import Users
+
+
+# * CUSTOM VALIDATOR
+class AllowedExtensions(object):
+    def __init__(self, message=None, allowed_extensions=None):
+        if not message:
+            message = 'This file extension is not allowed.'
+
+        self.message = message
+        self.allowed_extensions = allowed_extensions
+
+    def __call__(self, form, field):
+        filename = field.data.filename
+        if '.' not in filename:
+            raise ValidationError(self.message)
+
+        file_format = filename.rsplit('.', 1)[1].lower()
+            
+        if file_format not in self.allowed_extensions:
+            raise ValidationError(self.message)
+        
+    @property
+    def message(self):
+        return self.__message
+
+    @message.setter
+    def message(self, value):
+        self.__message = value
+
+    @message.getter
+    def message(self):
+        return self.__message + ' Use ' + ', '.join(self.allowed_extensions) + ' instead.'
 
 
 class CreateAccountForm(FlaskForm):
@@ -71,6 +104,18 @@ class UploadBrocatForm(FlaskForm):
             Length(max=100, message='100 is the maximum characters for a title')
         ]
     )
-    thumbnail = FileField(label='Thuumbnail')
-    audio = FileField(label='Audio', validators=[InputRequired('We need your Brocat here!')])
+    thumbnail = FileField(
+        label='Thumbnail',
+        validators=[
+            InputRequired('We need an awesome thumbnail!'),
+            AllowedExtensions(allowed_extensions=app.config['ALLOWED_IMAGES_EXTENSIONS'])
+        ]
+    )
+    audio = FileField(
+        label='Audio', 
+        validators=[
+            InputRequired('We need your Brocat here!'),
+            AllowedExtensions(allowed_extensions=app.config['ALLOWED_AUDIOS_EXTENSIONS'])
+        ])
     description = TextAreaField(label='Description')
+

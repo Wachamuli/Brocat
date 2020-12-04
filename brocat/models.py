@@ -1,7 +1,8 @@
 from sqlalchemy import Column, String, Integer
 from flask_login import UserMixin
-from bcrypt  import hashpw, checkpw, gensalt
+from bcrypt import hashpw, checkpw, gensalt
 
+from brocat import app
 from brocat.database import Base
 
 
@@ -11,7 +12,7 @@ class Users(Base, UserMixin):
     id = Column(Integer, primary_key=True)
     e_mail = Column('e-mail', String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
-    __password = Column('password',String(16), nullable=False)
+    __password = Column('password', String(16), nullable=False)
 
     def __init__(self, email, username, password):
         self.e_mail = email
@@ -32,3 +33,30 @@ class Users(Base, UserMixin):
 
     def __repr__(self):
         return self.username
+
+
+class Brocat(Base):
+    __tablename__ = 'brocat'
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String(100), nullable=True)
+    __thumbnail = Column(String(200), nullable=False)
+    audio = Column(String(200), nullable=False)
+    description = Column(String(500))
+
+    def __init__(self, title, thumbnail, audio, description):
+        self.title = title
+        self.thumbnail = thumbnail
+        self.audio = audio
+        self.description = description
+
+    @property
+    def thumbnail(self):
+        return self.__thumbnail
+    
+    @thumbnail.setter
+    def thumbnail(self, value):
+        if self.__thumbnail is None:
+            self.__thumbnail = app.config['DEFAULT_BROCAT_IMAGE']
+        self.__thumbnail = value
+    
