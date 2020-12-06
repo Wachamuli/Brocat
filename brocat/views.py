@@ -78,6 +78,13 @@ def my_profile():
     return f'<h1>This is your profile, {current_user}</h1>'
 
 
+def is_nullable_thumb(thumbnail, thumb_path):
+    if thumbnail is None:
+        thumb_path = None
+        return thumb_path
+    return 'Yeah, has path.'
+
+
 @app.route('/home/upload_brocat', methods=['GET', 'POST'])
 @login_required
 def upload_brocat():

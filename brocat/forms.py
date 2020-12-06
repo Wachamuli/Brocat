@@ -13,18 +13,13 @@ class AllowedExtensions(object):
     def __init__(self, message=None, allowed_extensions=None):
         if not message:
             message = 'This file extension is not allowed.'
-
         self.message = message
         self.allowed_extensions = allowed_extensions
 
     def __call__(self, form, field):
         filename = field.data.filename
-        if '.' not in filename:
-            raise ValidationError(self.message)
-
-        file_format = filename.rsplit('.', 1)[1].lower()
-            
-        if file_format not in self.allowed_extensions:
+        if not('.' in filename and 
+            filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
             raise ValidationError(self.message)
         
     @property
@@ -51,6 +46,7 @@ class CreateAccountForm(FlaskForm):
                 message='Use this format your e-mail address someone@example.com.'
             )
         ]
+        
     )
     username = StringField(
         label='Username',

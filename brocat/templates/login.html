@@ -28,7 +28,7 @@
             <form action="/login" method="POST" novalidate>
                 {{form.csrf_token}}
                 <div>
-                    {{ form.username(placeholder="Username") }}
+                    {{ form.username(placeholder="Username", autofocus=True) }}
                     {% for error in form.username.errors %}
                     <label for="">{{ error }}</label>
                     {% endfor %}

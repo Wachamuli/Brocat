@@ -1,0 +1,49 @@
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+.wrapper {
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+.wrapper * {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+
+.form div{
+    padding: 0.3%;
+}
+
+.form input{
+    padding: 0.5%;
+    text-align: left;
+}
+
+.wrapper button {
+    padding: 0.3%;
+    display: inline;
+    align-self: center;
+    margin: 1%;
+    text-align: center;
+}
+
+.login {
+    display: inline;
+}
+
+::-webkit-input-placeholder{
+    text-align: left;
+}
+
+.already-account {
+    text-align: left;
+}
+
+.error {
+    color: #EA2027;
+}

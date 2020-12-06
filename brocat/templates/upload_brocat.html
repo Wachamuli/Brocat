@@ -16,7 +16,7 @@
                 <div>
                     {{ form.csrf_token }}
                     <div>
-                        {{ form.title.label }} {{ form.title }}
+                        {{ form.title.label }} {{ form.title(autofocus=True) }}
                         {% for error in form.title.errors %}
                         <label for="">{{ error }}</label>
                         {% endfor %}

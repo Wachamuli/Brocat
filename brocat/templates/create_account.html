@@ -5,54 +5,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
+    <link rel="stylesheet" href="../static/create_account.css">
 </head>
 
 <body>
-    <header>
-        <h1>Create Account</h1>
-    </header>
-
-    <nav>
-
-    </nav>
-    <section>
-        <div>
-            <form action="/create_account" method="POST" novalidate>
-                {{form.csrf_token}}
-                <div>
+    <div class="wrapper">
+        <header>
+            <h1 class="title">Create Account</h1>
+        </header>
+    
+        <section>
+    
+            <div>
+                <form class="form" action="/create_account" method="POST" novalidate>
+                    {{form.csrf_token}}
                     <div>
-                        {{ form.email(placeholder="Email") }}
-                        {% for error in form.email.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
+                        <div>
+                            {{ form.email(placeholder="Email", autofocus=True) }}
+                            {% for error in form.email.errors %}
+                            <label class="error" for="">{{ error }}</label>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.username(placeholder="Username") }}
+                            {% for error in form.username.errors %}
+                            <label class="error" for="">{{ error }}</label>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.password(placeholder="Password") }}
+                            {% for error in form.password.errors %}
+                            <label class="error" for="">{{ error }}</label>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.confirm_password(placeholder="Confirm Password") }}
+                            {% for error in form.confirm_password.errors%}
+                            <label class="error" for="">{{ error }}</label>
+                            {% endfor %}
+                        </div>
                     </div>
                     <div>
-                        {{ form.username(placeholder="Username") }}
-                        {% for error in form.username.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
+                        <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>
+                        <button class="cancel-btn" type="submit">Accept</button>
                     </div>
-                    <div>
-                        {{ form.password(placeholder="Password") }}
-                        {% for error in form.password.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.confirm_password(placeholder="Confirm Password") }}
-                        {% for error in form.confirm_password.errors%}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div>
-                    <button type="button" onclick="window.location='/'">Cancel</button>
-                    <button type="submit">Accept</button>
-                </div>
-            </form>
-        </div>
-        <label for="">Already have an account? <a href="/login">Login</a></label>
-    </section>
+                </form>
+            </div>
+    
+            <label class="already-account" for="">Already have an account? <a class="login" href="/login">Login</a></label>
+    
+        </section>
+    </div>
+    
 </body>
 
 </html>
