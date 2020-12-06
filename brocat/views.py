@@ -12,6 +12,7 @@ from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 main = Blueprint('main', __name__)
 
+
 @main.route('/')
 def index():
     return render_template('index.html')
@@ -53,7 +54,6 @@ def login():
     return render_template('login.html', form=log_form,)
 
 
-
 @main.route('/logout')
 @login_required
 def logout():
@@ -81,16 +81,11 @@ def upload_brocat():
         audio = upload_form.audio.data
         description = upload_form.description.data
 
-        there_thumb = not '' in str(thumbnail)
-        if there_thumb:
-            thumbnail_filename = secure_filename(thumbnail.filename)
-            thumb_path = os.path.join(img_folder, thumbnail_filename)
-            thumbnail.save(thumb_path)
-        else:
-            thumb_path = None
-
+        thumbnail_filename = secure_filename(thumbnail.filename)
         audio_filename = secure_filename(audio.filename)
+        thumb_path = os.path.join(img_folder, thumbnail_filename)
         aud_path = os.path.join(aud_folder, audio_filename)
+        thumbnail.save(thumb_path)
         audio.save(aud_path)
 
         new_brocat = Brocat(

@@ -17,12 +17,10 @@ class AllowedExtensions(object):
         self.allowed_extensions = allowed_extensions
 
     def __call__(self, form, field):
-        assert field == None
-        if not '' in str(field.data):
-            filename = field.data.filename
-            if not('.' in filename and 
-                filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
-                raise ValidationError(self.message)
+        filename = field.data.filename
+        if not('.' in filename and 
+            filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
+            raise ValidationError(self.message)
         
     @property
     def message(self):
@@ -114,8 +112,7 @@ class UploadBrocatForm(FlaskForm):
         validators=[
             Optional(),
             AllowedExtensions(allowed_extensions=app.config['ALLOWED_IMAGES_EXTENSIONS'])
-        ],
-        default=None
+        ]
     )
     audio = FileField(
         label='Audio', 
