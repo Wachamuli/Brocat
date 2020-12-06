@@ -40,6 +40,11 @@
                     {% endfor %}
                 </div>
                 <div>
+                    {% for error in form.check_user.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
+                </div>
+                <div>
                     {{ form.remember.label }}{{ form.remember }}
                 </div>
                 <div>

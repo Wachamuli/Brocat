@@ -1,10 +1,10 @@
+from flask import current_app as app
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, FileField, TextAreaField, \
-    BooleanField
+    BooleanField, Field
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length, \
-    ValidationError
+    ValidationError, Optional
 
-from brocat import app
 from brocat.models import Users
 
 
@@ -17,10 +17,12 @@ class AllowedExtensions(object):
         self.allowed_extensions = allowed_extensions
 
     def __call__(self, form, field):
-        filename = field.data.filename
-        if not('.' in filename and 
-            filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
-            raise ValidationError(self.message)
+        assert field == None
+        if not '' in str(field.data):
+            filename = field.data.filename
+            if not('.' in filename and 
+                filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
+                raise ValidationError(self.message)
         
     @property
     def message(self):
@@ -91,6 +93,13 @@ class LoginForm(FlaskForm):
     )
     remember = BooleanField(label='Remember me?')
 
+    check_user = Field()
+    def validate_check_user(self, form):
+        user_exists = Users.query.filter_by(username=self.username.data).first()
+        if not(user_exists and user_exists.check_psw(self.password.data)):
+            raise ValidationError('Invalid username or password.')
+        
+        form.data = user_exists
 
 class UploadBrocatForm(FlaskForm):
     title = StringField(
@@ -103,15 +112,17 @@ class UploadBrocatForm(FlaskForm):
     thumbnail = FileField(
         label='Thumbnail',
         validators=[
-            InputRequired('We need an awesome thumbnail!'),
+            Optional(),
             AllowedExtensions(allowed_extensions=app.config['ALLOWED_IMAGES_EXTENSIONS'])
-        ]
+        ],
+        default=None
     )
     audio = FileField(
         label='Audio', 
         validators=[
             InputRequired('We need your Brocat here!'),
             AllowedExtensions(allowed_extensions=app.config['ALLOWED_AUDIOS_EXTENSIONS'])
-        ])
+        ]
+    )
     description = TextAreaField(label='Description')
 

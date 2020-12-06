@@ -44,6 +44,9 @@ class Brocat(Base):
     description = Column(String(500))
 
     def __init__(self, title, thumbnail, audio, description):
+        if thumbnail == None:
+            thumbnail = 'uploads/images/default.png'
+
         self.title = title
         self.thumbnail = thumbnail
         self.audio = audio

@@ -1,23 +1,23 @@
 import os
 
 from flask import render_template, redirect, url_for, \
-    flash
-from flask_login import login_user, login_required, logout_user, \
+    flash, Blueprint, current_app as app
+from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
 
-from brocat import app, login_manager
 from brocat.database import db_session
 from brocat.models import Users, Brocat
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
+main = Blueprint('main', __name__)
 
-@app.route('/')
+@main.route('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/create_account', methods=['GET', 'POST'])
+@main.route('/create_account', methods=['GET', 'POST'])
 def create_account():
     ca_form = CreateAccountForm()
     if ca_form.validate_on_submit():
@@ -38,33 +38,23 @@ def create_account():
     return render_template('create_account.html', form=ca_form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@main.route('/login', methods=['GET', 'POST'])
 def login():
     log_form = LoginForm()
 
     if log_form.validate_on_submit():
-        username = log_form.username.data
-        psw = log_form.password.data
+        user = log_form.check_user.data
         remember = log_form.remember.data
 
-        user_exists = Users.query.filter_by(username=username).first()
-        if user_exists and user_exists.check_psw(psw):
-            login_user(user_exists, remember=remember)
-            flash('Logged succesfully.')
+        login_user(user, remember=remember)
+        flash('Logged succesfully.')
+        return redirect('/')
 
-            return redirect('/')
-
-        return 'Invalid username or password.'
-
-    return render_template('login.html', form=log_form)
+    return render_template('login.html', form=log_form,)
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.get(int(user_id))
 
-
-@app.route('/logout')
+@main.route('/logout')
 @login_required
 def logout():
     flash('Logout successfully')
@@ -72,20 +62,13 @@ def logout():
     return redirect('/login')
 
 
-@app.route('/home')
+@main.route('/home')
 @login_required
-def my_profile():
+def home():
     return f'<h1>This is your profile, {current_user}</h1>'
 
 
-def is_nullable_thumb(thumbnail, thumb_path):
-    if thumbnail is None:
-        thumb_path = None
-        return thumb_path
-    return 'Yeah, has path.'
-
-
-@app.route('/home/upload_brocat', methods=['GET', 'POST'])
+@main.route('/home/upload_brocat', methods=['GET', 'POST'])
 @login_required
 def upload_brocat():
     img_folder = app.config['IMAGES_FOLDER']
@@ -98,12 +81,16 @@ def upload_brocat():
         audio = upload_form.audio.data
         description = upload_form.description.data
 
-        thumbnail_filename = secure_filename(thumbnail.filename)
-        audio_filename = secure_filename(audio.filename)
+        there_thumb = not '' in str(thumbnail)
+        if there_thumb:
+            thumbnail_filename = secure_filename(thumbnail.filename)
+            thumb_path = os.path.join(img_folder, thumbnail_filename)
+            thumbnail.save(thumb_path)
+        else:
+            thumb_path = None
 
-        thumb_path = os.path.join(img_folder, thumbnail_filename)
+        audio_filename = secure_filename(audio.filename)
         aud_path = os.path.join(aud_folder, audio_filename)
-        thumbnail.save(thumb_path)
         audio.save(aud_path)
 
         new_brocat = Brocat(
@@ -129,6 +116,6 @@ def upload_brocat():
 #     pass
 
 
-# @app.errorhandler(404)
+# @main.errorhandler(404)
 # def error():
 #     pass
