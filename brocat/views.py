@@ -56,12 +56,13 @@ def login():
         user = log_form.check_user.data
         remember = log_form.remember.data
         
-        next = session['next']
         login_user(user, remember=remember)
         flash('Logged succesfully.')
-
-        if is_safe_url(next):
-            return redirect(next)
+        
+        if session['next'] != None:
+            next = session['next']
+            if is_safe_url(next):
+                return redirect(next)
 
         return redirect('/')
 
