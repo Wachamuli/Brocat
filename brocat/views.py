@@ -1,10 +1,11 @@
 import os
 
-from flask import render_template, redirect, flash, \
-    Blueprint, current_app as app
+from flask import render_template, redirect, flash, request, \
+    session, Blueprint, current_app as app
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
+from urllib.parse import urlparse, urljoin
 
 from brocat.database import db_session
 from brocat.models import Users, Brocats
@@ -39,16 +40,29 @@ def create_account():
     return render_template('create_account.html', form=ca_form)
 
 
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+        ref_url.netloc == test_url.netloc
+
+
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     log_form = LoginForm()
+    session['next'] = request.args.get('next')
 
     if log_form.validate_on_submit():
         user = log_form.check_user.data
         remember = log_form.remember.data
-
+        
+        next = session['next']
         login_user(user, remember=remember)
         flash('Logged succesfully.')
+
+        if is_safe_url(next):
+            return redirect(next)
+
         return redirect('/')
 
     return render_template('login.html', form=log_form,)
@@ -57,8 +71,8 @@ def login():
 @main.route('/logout')
 @login_required
 def logout():
-    flash('Logout successfully')
     logout_user()
+    flash('Logout successfully')
     return redirect('/login')
 
 

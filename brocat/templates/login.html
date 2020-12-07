@@ -25,7 +25,7 @@
             {% endwith %}
         </div>
         <div>
-            <form action="/login" method="POST" novalidate>
+            <form method="POST">
                 {{form.csrf_token}}
                 <div>
                     {{ form.username(placeholder="Username", autofocus=True) }}

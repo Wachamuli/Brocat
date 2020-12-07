@@ -24,7 +24,7 @@ class DevelopmentConfig(Config):
     SESSION_COOKIE_SECURE = False
     PERMANENT_SESSION_LIFETIME = datetime.timedelta(days=1)
 
-    USE_SESSION_FOR_NEXT = True
+    USE_SESSION_FOR_NEXT = False
 
     UPLOADS_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads'
     IMAGES_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads/images'
