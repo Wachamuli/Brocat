@@ -1,13 +1,13 @@
 import os
 
-from flask import render_template, redirect, url_for, \
-    flash, Blueprint, current_app as app
+from flask import render_template, redirect, flash, \
+    Blueprint, current_app as app
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
 
 from brocat.database import db_session
-from brocat.models import Users, Brocat
+from brocat.models import Users, Brocats
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 main = Blueprint('main', __name__)
@@ -31,7 +31,7 @@ def create_account():
         try:
             db_session.add(new_user)
             db_session.commit()
-            return redirect(url_for('login'))
+            return redirect('/login')
         except:
             db_session.rollback()
             return 'Error in the db'
@@ -65,6 +65,11 @@ def logout():
 @main.route('/home')
 @login_required
 def home():
+    print(current_user)
+    print(current_user.brocats)
+    for brocat in current_user.brocats:
+        print(brocat.title)
+        
     return f'<h1>This is your profile, {current_user}</h1>'
 
 
@@ -88,7 +93,7 @@ def upload_brocat():
         thumbnail.save(thumb_path)
         audio.save(aud_path)
 
-        new_brocat = Brocat(
+        new_brocat = Brocats(
             title,
             thumb_path,
             aud_path,

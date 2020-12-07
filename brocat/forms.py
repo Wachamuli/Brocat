@@ -3,12 +3,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, FileField, TextAreaField, \
     BooleanField, Field
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length, \
-    ValidationError, Optional
+    ValidationError
 
 from brocat.models import Users
 
 
 # * CUSTOM VALIDATOR
+
 class AllowedExtensions(object):
     def __init__(self, message=None, allowed_extensions=None):
         if not message:
@@ -19,7 +20,7 @@ class AllowedExtensions(object):
     def __call__(self, form, field):
         filename = field.data.filename
         if not('.' in filename and 
-            filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
+               filename.rsplit('.', 1)[1].lower() in self.allowed_extensions):
             raise ValidationError(self.message)
         
     @property
@@ -110,7 +111,7 @@ class UploadBrocatForm(FlaskForm):
     thumbnail = FileField(
         label='Thumbnail',
         validators=[
-            Optional(),
+            InputRequired('We need an awesome thumbnail here!'),
             AllowedExtensions(allowed_extensions=app.config['ALLOWED_IMAGES_EXTENSIONS'])
         ]
     )

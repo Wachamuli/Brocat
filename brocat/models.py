@@ -1,17 +1,20 @@
-from sqlalchemy import Column, String, Integer
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 from bcrypt import hashpw, checkpw, gensalt
 
 from brocat.database import Base
 
 
 class Users(Base, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = 'Users'
 
     id = Column(Integer, primary_key=True)
     e_mail = Column('e-mail', String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
     __password = Column('password', String(16), nullable=False)
+
+    brocats = relationship('Brocats', back_populates='author')
 
     def __init__(self, email, username, password):
         self.e_mail = email
@@ -34,8 +37,8 @@ class Users(Base, UserMixin):
         return self.username
 
 
-class Brocat(Base):
-    __tablename__ = 'brocat'
+class Brocats(Base):
+    __tablename__ = 'Brocats'
 
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=True)
@@ -43,9 +46,13 @@ class Brocat(Base):
     audio = Column(String(200), nullable=False)
     description = Column(String(500))
 
+    users_id = Column(Integer, ForeignKey('Users.id'))
+    author = relationship('Users', back_populates='brocats')
+
     def __init__(self, title, thumbnail, audio, description):
         self.title = title
         self.thumbnail = thumbnail
         self.audio = audio
         self.description = description
+        self.users_id = current_user.id
     

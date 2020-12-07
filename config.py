@@ -6,6 +6,8 @@ class Config(object):
     SECRET_KEY = None
     SESSION_COOKIE_SECURE = True
     DEBUG = False
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(days=31)
+
 
     USE_SESSION_FOR_NEXT = False
 
@@ -29,7 +31,6 @@ class DevelopmentConfig(Config):
     AUDIOS_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads/audios'
     ALLOWED_IMAGES_EXTENSIONS = {'jpg', 'jpeg', 'svg', 'png'}
     ALLOWED_AUDIOS_EXTENSIONS = {'mp3', 'wav', 'ogg', 'oga', 'flac'}
-    DEFAULT_BROCAT_IMAGE = '/home/wachadev/Programming/Python/brocat/brocat/uploads/images/default.png'
 
 
 class ProductionConfig(Config):
