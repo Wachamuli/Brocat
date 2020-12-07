@@ -1,50 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Podcast</title>
-</head>
-<body>
-    <header>
+{% extends "layout.html" %}
 
-    </header>
-
-    <section>
-        <div>
-            <form action="/home/upload_brocat" method="POST" enctype="multipart/form-data" novalidate>
+{% block main %}
+<section>
+    <div>
+        <form action="/home/upload_brocat" method="POST" enctype="multipart/form-data" novalidate>
+            <div>
+                {{ form.csrf_token }}
                 <div>
-                    {{ form.csrf_token }}
-                    <div>
-                        {{ form.title.label }} {{ form.title(autofocus=True) }}
-                        {% for error in form.title.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.thumbnail.label}}{{ form.thumbnail }}
-                        {% for error in form.thumbnail.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.audio.label }}{{ form.audio }}
-                        {% for error in form.audio.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.description.label }}{{ form.description }}
-                        {% for error in form.description.errors %}
-                        <label for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                    <button type="submit">Upload</button>
-                    <button type="button" onclick="window.location='/home'">Cancel</button>
+                    {{ form.title.label }} {{ form.title(autofocus=True) }}
+                    {% for error in form.title.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
                 </div>
-            </form>
-        </div>
-    </section>
-    
-</body>
-</html>
+                <div>
+                    {{ form.thumbnail.label}}{{ form.thumbnail }}
+                    {% for error in form.thumbnail.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.audio.label }}{{ form.audio }}
+                    {% for error in form.audio.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.description.label }}{{ form.description }}
+                    {% for error in form.description.errors %}
+                    <label for="">{{ error }}</label>
+                    {% endfor %}
+                </div>
+                <button type="submit">Upload</button>
+                <button type="button" onclick="window.location='/home'">Cancel</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
