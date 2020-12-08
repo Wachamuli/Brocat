@@ -1,51 +1,82 @@
 {% extends "layout.html" %}
 
 {% block main %}
-<div class="wrapper">
-    <header>
-        <h1 class="title">Create Account</h1>
-    </header>
+<div class="container">
+    <div class="content">
+        <header>
+            <h1 class="title">Create an account</h1>
+        </header>
 
-    <section>
+        <section>
+            <div>
+                <form class="form" action="/create_account" method="POST" novalidate>
+                    {{form.csrf_token}}
+                    <div>
+                        <div class="input-wrap">
+                            <div>
+                                {{ form.email.label(class_="form-label") }}
+                            </div>
+                            {{ form.email(placeholder="Enter an email", autofocus=True) }}
+                            <div>
+                                {% for error in form.email.errors %}
+                                <label class="err-msg" for="">{{ error }}</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="input-wrap">
+                            <div>
+                                {{ form.username.label(class_="form-label") }}
+                            </div>
+                            {{ form.username(placeholder="Create a username") }}
+                            <div>
+                                {% for error in form.username.errors %}
+                                <label class="err-msg" for="">{{ error }}</label>
+                                {% endfor %}
+                            </div>
 
-        <div>
-            <form class="form" action="/create_account" method="POST" novalidate>
-                {{form.csrf_token}}
-                <div>
-                    <div>
-                        {{ form.email(placeholder="Email", autofocus=True) }}
-                        {% for error in form.email.errors %}
-                        <label class="error" for="">{{ error }}</label>
-                        {% endfor %}
+                        </div>
+                        <div class="input-wrap">
+                            <div>
+                                {{ form.password.label(class_="form-label") }}
+                            </div>
+                            {{ form.password(placeholder="A secret password") }}
+                            <div>
+                                {% for error in form.password.errors %}
+                                <label class="err-msg" for="">{{ error }}</label>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                        <div class="input-wrap">
+                            <div class="">
+                                {{ form.confirm_password.label(class_="form-label") }}
+                            </div>
+                            {{ form.confirm_password(placeholder="Write again the password") }}
+                            <div>
+                                {% for error in form.confirm_password.errors%}
+                                <label class="err-msg" for="">{{ error }}</label>
+                                {% endfor %}
+                            </div>
+
+                        </div>
                     </div>
                     <div>
-                        {{ form.username(placeholder="Username") }}
-                        {% for error in form.username.errors %}
-                        <label class="error" for="">{{ error }}</label>
-                        {% endfor %}
+                        <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>
+                        <button class="cancel-btn" type="submit">Accept</button>
                     </div>
-                    <div>
-                        {{ form.password(placeholder="Password") }}
-                        {% for error in form.password.errors %}
-                        <label class="error" for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        {{ form.confirm_password(placeholder="Confirm Password") }}
-                        {% for error in form.confirm_password.errors%}
-                        <label class="error" for="">{{ error }}</label>
-                        {% endfor %}
-                    </div>
+
+                    
+                </form>
+
+                <div  class="account" >
+                    <label for="">Already have an account? <a class="login" href="/login"> Login</a></label>
                 </div>
-                <div>
-                    <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>
-                    <button class="cancel-btn" type="submit">Accept</button>
-                </div>
-            </form>
-        </div>
+                
+            </div>
 
-        <label class="already-account" for="">Already have an account? <a class="login" href="/login">Login</a></label>
 
-    </section>
+        </section>
+    </div>
+
 </div>
 {% endblock %}

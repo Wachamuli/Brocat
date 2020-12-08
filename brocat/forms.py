@@ -38,7 +38,7 @@ class AllowedExtensions(object):
 
 class CreateAccountForm(FlaskForm):
     email = StringField(
-        label='Email',
+        label="What's your e-mail?",
         validators=[
             InputRequired('E-mail field is required.'),
             Email('Invalid e-mail address.'),
@@ -50,16 +50,16 @@ class CreateAccountForm(FlaskForm):
         
     )
     username = StringField(
-        label='Username',
+        label='What do you want us to call you?',
         validators=[
             InputRequired('Username field is required'),
             Length(max=16, message="The username must be less or equal to 16 characters.")
         ]
     )
     password = PasswordField(
-        label='Password',
+        label='Create an password.',
         validators=[
-            InputRequired('Password field is required.'),
+            InputRequired('Password is needed.'),
             EqualTo('confirm_password', message='Passwords must match.'),
             Regexp(
                 regex=r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$',
@@ -68,8 +68,8 @@ class CreateAccountForm(FlaskForm):
             )
         ]
     )
-    confirm_password = PasswordField(label='Confirm Password',
-        validators=[InputRequired('Confirm your password.')]
+    confirm_password = PasswordField(label='Confirm your password.',
+        validators=[InputRequired('Write your password again.')]
     ) 
 
     def validate_email(form, email):

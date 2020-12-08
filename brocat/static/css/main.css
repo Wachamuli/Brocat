@@ -1,0 +1,192 @@
+*  {
+    font-family: 'Cascadia Code', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/* body {
+    background:
+    radial-gradient(black 15%, transparent 16%) 0 0,
+    radial-gradient(black 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    background-color:#282828;
+    background-size:16px 16px;
+} */
+
+
+/* * AUTHENTICATION FORM */
+
+.container {
+    border: 1px solid black;
+    border-style: none;
+
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+
+    background: #fff;
+}
+
+.container .title {
+    text-align: center;
+    padding: 1em;
+    background: #1e90ff;
+    color: #ffff;
+}
+
+.form {
+    text-align: center;
+}
+
+.form .input-wrap input {
+    padding: 1ch;
+    border-top: none;
+    border-right: none;
+    border-left: none; 
+    display: flex;
+    width: 100%;
+}
+
+.form button {
+    padding: 1ch;
+    border-radius: 20px;
+    border-style: solid;    
+    margin: 1ch;
+
+}
+
+.form .account {
+    display: flex;
+    justify-self: flex-start;
+}
+
+.form .input-wrap .form-label {
+    display: block;
+    padding-top: 1ch;
+    justify-content: start;
+    font-size: medium;
+    text-align: start;
+}
+
+.form .input-wrap {
+    padding: 1em;
+    margin-left: 23%;
+    margin-right: 23%;
+}
+
+.form .err-msg {
+    display: block;
+}
+
+.err-msg {
+    color: #ff3f34;
+    font-size: small;
+}
+
+.content .account {
+    padding: 1rem;
+    margin: 1rem;
+}
+
+/* * END AUTHENTICATION FORM */
+/*
+.wrapper {
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+.wrapper * {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+
+.form div{
+    padding: 0.3%;
+}
+
+.form input{
+    padding: 0.5%;
+    text-align: left;
+}
+
+.wrapper button {
+    padding: 0.3%;
+    display: inline;
+    align-self: center;
+    margin: 1%;
+    text-align: center;
+}
+
+.login {
+    display: inline;
+}
+
+::-webkit-input-placeholder{
+    text-align: left;
+}
+
+.already-account {
+    text-align: left;
+}
+
+.error {
+    color: #EA2027;
+} */
+
+/* .grid {
+    display: grid;
+    /* grid-template-columns: auto 33% 33%;
+    grid-template-rows: 40% 50%; */
+    /* gap: 1em; */
+    /* column-gap: 1em; */
+    /* row-gap: 1em; */
+    /* grid-template-columns: repeat(6, 1fr); */
+    /* grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+    gap: 1em;
+
+    justify-items: stretch;
+    /* align-items: stretch; */
+/* }
+
+.grid div {
+    background: #ecf0f1;
+    padding: 1em;
+}
+
+.grid > div:hover {
+    border: 1px solid black;
+}
+
+.element-one {
+    /* align-self: center; */
+    /* grid-column: 1/4;
+    grid-row: 1/3; */
+/* }
+
+.element-two {
+    grid-column: 1/3
+}  */
+
+/* .element-five {
+    /* grid-row: 1/1; 
+} */
+
+/* .element3 {
+    align-self: end;
+}  */
+/* .nested-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 100px;
+    gap: 1em;
+}
+.nested-grid div {
+    border: 1px solid black;
+    background: yellowgreen;
+} */
