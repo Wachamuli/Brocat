@@ -4,6 +4,12 @@
     margin: 0;
 }
 
+.flashed-msg {
+    color: #27ae60;
+    text-align: center;
+    margin: 1rem;
+}
+
 /* body {
     background:
     radial-gradient(black 15%, transparent 16%) 0 0,
@@ -18,15 +24,17 @@
 /* * AUTHENTICATION FORM */
 
 .container {
-    border: 1px solid black;
-    border-style: none;
-
     margin-left: 30%;
     margin-right: 30%;
-    margin-top: 10%;
-    margin-bottom: 10%;
+    margin-top: 8%;
+    margin-bottom: 8%;
 
     background: #fff;
+}
+
+.content {
+    border: 5px solid black;
+    border-radius: 1rem;
 }
 
 .container .title {
@@ -34,6 +42,8 @@
     padding: 1em;
     background: #1e90ff;
     color: #ffff;
+    border-top-right-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
 }
 
 .form {
