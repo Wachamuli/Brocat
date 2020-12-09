@@ -9,10 +9,24 @@
 </head>
 
 <body>
+    
+    <header class="p-header">
+        <h1 class="logo">Brocat</h1>
+        {% block header %}{% endblock %}
+    </header>
+
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="/">Principal</a></li>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/home/upload_brocat">Upload Brocat</a></li>
+        </ul>
+    </nav>
 
     <main>
         {% block main %}{% endblock %}
     </main>
+
 
 </body>
 

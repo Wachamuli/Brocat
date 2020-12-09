@@ -1,20 +1,60 @@
 {% extends "layout.html" %}
 
-{% block main %}
-<header>
-    <h1>Welcome! {{user}}</h1>
-</header>
+{% block title %}Brocat{% endblock %}
 
-<div>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages%}
-        <li class="flashed-msg">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+{%block header %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages%}
+    <li class="flashed-msg">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<div class="btn-wrapper">
+    <button class="login-btn" type="button" onclick="window.location='/login'">Login</button>
+    <button class="create-btn" type="button" onclick="window.location='/create_account'">Create Account</button>
 </div>
+{% endblock header%}
 
-{% endblock %}
+{% block main %}
+<div class="grid">
+
+    <div class="brocat-display">
+        {% with li_brocats = brocats_list %}
+        {% if li_brocats %}
+        <ul>
+            {% for brocat in li_brocats %}
+
+
+            <div class="brocat-container">
+                <img src="{{ brocat.thumbnail }}" alt="">
+                <h4>{{brocat.title}}</h6>
+                <p>{{brocat.description}}</p>
+            </div>
+
+
+            
+
+
+
+
+
+
+            
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% endblock main%}
+    </div>
+
+
+    <aside>
+        <!-- ASIDE BAR HERE!!! -->
+    </aside>
+
+</div>

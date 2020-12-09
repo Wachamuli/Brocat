@@ -2,12 +2,7 @@
     font-family: 'Cascadia Code', sans-serif;
     padding: 0;
     margin: 0;
-}
-
-.flashed-msg {
-    color: #27ae60;
-    text-align: center;
-    margin: 1rem;
+    list-style: none;
 }
 
 /* body {
@@ -20,8 +15,53 @@
     background-size:16px 16px;
 } */
 
+.flashed-msg {
+    color: #27ae60;
+    text-align: center;
+    margin: 1rem;
+}
 
-/* * AUTHENTICATION FORM */
+/* * NAV */
+
+.nav-bar {
+    text-align: right;
+    padding: 1em;
+    background: #0fbcf9;
+}
+
+.nav-bar li {
+    display: inline;
+}
+
+/* * INDEX  */
+
+
+.p-header {
+    background: #1e90ff;
+    color: #ffff;
+    padding: 1.0em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.login-btn, .create-btn {
+    padding: 0.5em;
+    display: inline;
+    border-radius: 20px;
+    border-color: black;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.brocat-display {
+    background: #ff3f34;
+    grid-column: 2/7;
+}
+
+/* * AUTHENTICATION */
 
 .container {
     margin-left: 30%;

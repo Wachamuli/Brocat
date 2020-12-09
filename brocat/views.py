@@ -1,4 +1,5 @@
 import os
+import random
 
 from flask import render_template, redirect, flash, request, \
     session, Blueprint, current_app as app
@@ -16,7 +17,14 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    total_brocats = Brocats.query.count()
+    encontered_list = []
+    for _ in range(0, total_brocats):
+        rand = random.randint(0, total_brocats)
+        brocat = Brocats.query.filter_by(id=rand).first()
+        encontered_list.append(brocat)
+    
+    return render_template('index.html', brocats_list=encontered_list)
 
 
 @main.route('/create_account', methods=['GET', 'POST'])
