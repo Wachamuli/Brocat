@@ -3,6 +3,7 @@
     padding: 0;
     margin: 0;
     list-style: none;
+    border: 1px solid black;
 }
 
 /* body {
@@ -18,7 +19,7 @@
 .flashed-msg {
     color: #27ae60;
     text-align: center;
-    margin: 1rem;
+    margin: 0.5em;
 }
 
 /* * NAV */
@@ -56,18 +57,34 @@
     grid-template-columns: repeat(6, 1fr);
 }
 
-.brocat-display {
+.nested-grid {
     background: #ff3f34;
     grid-column: 2/7;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(auto, 1fr);
+    margin-top: 1%;
+    margin-right: 1%;
+    gap: 1rem;
 }
+
+.brocat-display {
+    display: flex;
+}
+
+.brocat-container img{
+    height: 150px;
+    width: 250px;
+}
+
 
 /* * AUTHENTICATION */
 
 .container {
     margin-left: 30%;
     margin-right: 30%;
-    margin-top: 8%;
-    margin-bottom: 8%;
+    margin-top: 5%;
+    margin-bottom: auto;
 
     background: #fff;
 }

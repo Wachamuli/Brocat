@@ -2,7 +2,7 @@ import os
 import random
 
 from flask import render_template, redirect, flash, request, \
-    session, Blueprint, current_app as app
+    Blueprint, abort, current_app as app
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
@@ -19,7 +19,7 @@ main = Blueprint('main', __name__)
 def index():
     total_brocats = Brocats.query.count()
     encontered_list = []
-    for _ in range(0, total_brocats):
+    for _ in range(0, 20):
         rand = random.randint(0, total_brocats)
         brocat = Brocats.query.filter_by(id=rand).first()
         encontered_list.append(brocat)
@@ -58,42 +58,38 @@ def is_safe_url(target):
 @main.route('/login', methods=['GET', 'POST'])
 def login():
     log_form = LoginForm()
-    session['next'] = request.args.get('next')
-
     if log_form.validate_on_submit():
         user = log_form.check_user.data
         remember = log_form.remember.data
         
         login_user(user, remember=remember)
         flash('Logged succesfully.')
+        next = request.args.get('next')
         
-        if session['next'] != None:
-            next = session['next']
-            if is_safe_url(next):
-                return redirect(next)
+        if not is_safe_url(next):
+            return abort(400)
 
-        return redirect('/')
+        return redirect(next or '/')
 
     return render_template('login.html', form=log_form,)
 
 
 @main.route('/logout')
-@login_required
 def logout():
     logout_user()
-    flash('Logout successfully')
+    if current_user.is_authenticated:
+        flash('Logout successfully')
     return redirect('/login')
 
 
 @main.route('/home')
 @login_required
 def home():
-    print(current_user)
-    print(current_user.brocats)
+    user_brocats = []
     for brocat in current_user.brocats:
-        print(brocat.title)
+        user_brocats.append(brocat.title)
         
-    return f'<h1>This is your profile, {current_user}</h1>'
+    return render_template('home.html', user=current_user, user_brocats=user_brocats)
 
 
 @main.route('/home/upload_brocat', methods=['GET', 'POST'])

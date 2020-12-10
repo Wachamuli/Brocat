@@ -22,38 +22,28 @@
 {% block main %}
 <div class="grid">
 
-    <div class="brocat-display">
+    <div class="nested-grid">
         {% with li_brocats = brocats_list %}
         {% if li_brocats %}
-        <ul>
-            {% for brocat in li_brocats %}
+        {% for brocat in li_brocats %}
 
-
+        <div class="brocat-display">
             <div class="brocat-container">
-                <img src="{{ brocat.thumbnail }}" alt="">
-                <h4>{{brocat.title}}</h6>
-                <p>{{brocat.description}}</p>
+                <image src="Apps.png" alt="" style="width: 100px; height: 100px;">
+                    <h4>{{brocat.title}}</h6>
+                        <p>{{brocat.description}}</p>
             </div>
+        </div>
 
-
-            
-
-
-
-
-
-
-            
-            {% endfor %}
-        </ul>
+        {% endfor %}
         {% endif %}
         {% endwith %}
-
-        {% endblock main%}
     </div>
+    {% endblock main%}
 
 
     <aside>
+        <h1>sadfasdf</h1>
         <!-- ASIDE BAR HERE!!! -->
     </aside>
 
