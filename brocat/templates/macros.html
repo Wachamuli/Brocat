@@ -1,0 +1,27 @@
+{% macro render_field(field) %}
+    <div class="input-wrap">
+        <div>
+            {{ field.label(class_="form-label") }}
+        </div>
+        {{ field(**kwargs)|safe }}
+        <div>
+            {% for error in field.errors %}
+            <label class="err-msg" for="">{{ error }}</label>
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}
+
+
+{% macro flashed_messages() %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="flashed-msg">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+{% endmacro %}
+

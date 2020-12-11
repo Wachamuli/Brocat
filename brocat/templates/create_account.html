@@ -1,3 +1,5 @@
+{% from "macros.html" import render_field %}
+
 {% extends "layout.html" %}
 
 {% block title %}Create Account{% endblock %}
@@ -14,53 +16,10 @@
                 <form class="form" action="/create_account" method="POST" novalidate>
                     {{form.csrf_token}}
                     <div>
-                        <div class="input-wrap">
-                            <div>
-                                {{ form.email.label(class_="form-label") }}
-                            </div>
-                            {{ form.email(placeholder="Enter an email", autofocus=True) }}
-                            <div>
-                                {% for error in form.email.errors %}
-                                <label class="err-msg" for="">{{ error }}</label>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="input-wrap">
-                            <div>
-                                {{ form.username.label(class_="form-label") }}
-                            </div>
-                            {{ form.username(placeholder="Create a username") }}
-                            <div>
-                                {% for error in form.username.errors %}
-                                <label class="err-msg" for="">{{ error }}</label>
-                                {% endfor %}
-                            </div>
-
-                        </div>
-                        <div class="input-wrap">
-                            <div>
-                                {{ form.password.label(class_="form-label") }}
-                            </div>
-                            {{ form.password(placeholder="A secret password") }}
-                            <div>
-                                {% for error in form.password.errors %}
-                                <label class="err-msg" for="">{{ error }}</label>
-                                {% endfor %}
-                            </div>
-
-                        </div>
-                        <div class="input-wrap">
-                            <div class="">
-                                {{ form.confirm_password.label(class_="form-label") }}
-                            </div>
-                            {{ form.confirm_password(placeholder="Write again the password") }}
-                            <div>
-                                {% for error in form.confirm_password.errors%}
-                                <label class="err-msg" for="">{{ error }}</label>
-                                {% endfor %}
-                            </div>
-
-                        </div>
+                        {{ render_field(form.email, placeholder="Enter an email", autofocus=True) }}
+                        {{ render_field(form.username, placeholder="Create an username")}}
+                        {{ render_field(form.password, placeholder="Type a password")}}
+                        {{ render_field(form.confirm_password, placeholder="Retype your password") }}
                     </div>
                     <div>
                         <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>

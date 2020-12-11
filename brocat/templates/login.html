@@ -1,78 +1,49 @@
+{% from "macros.html" import render_field, flashed_messages %}
+
 {% extends "layout.html" %}
 
 {% block title %}Login{% endblock %}
 
 {% block main %}
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-            <li class="flashed-msg">{{message}}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-{% endwith %}
-<div class="container">
-    <div class="content">
-        <header>
-            <h1 class="title">Sign in</h1>
-        </header>
+    {{ flashed_messages() }}
 
-        <section>
-            <div>
-                <form class="form" method="POST" novalidate>
-                    {{form.csrf_token}}
-                    <div>
+    <div class="container">
+        <div class="content">
+            <header>
+                <h1 class="title">Sign in</h1>
+            </header>
 
-                        <div class="input-wrap">
+            <section>
+                <div>
+                    <form class="form" method="POST" novalidate>
+                        {{form.csrf_token}}
+                        <div>
+                            {{ render_field(form.username, placeholder='Enter your username', autofocus=True) }}
+                            {{ render_field(form.password, placeholder='Type your password')}}
                             <div>
-                                {{ form.username.label(class_="form-label") }}
-                            </div>
-                            {{ form.username(placeholder="Enter your username") }}
-                            <div>
-                                {% for error in form.username.errors %}
-                                <label class="err-msg" for="">{{ error }}</label>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <div class="input-wrap">
-                            <div>
-                                {{ form.password.label(class_="form-label") }}
-                            </div>
-                            {{ form.password(placeholder="Put your password") }}
-                            <div>
-                                {% for error in form.password.errors %}
-                                <label class="err-msg" for="">{{ error }}</label>
-                                {% endfor %}
+                                <div>
+                                    {{ form.remember.label }} {{ form.remember }}
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <div>
-                                {{ form.remember.label }} {{ form.remember }}
-                            </div>
+                            <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>
+                            <button class="cancel-btn" type="submit">Accept</button>
                         </div>
 
+
+                    </form>
+
+                    <div class="account">
+                        <label for="">Not a member yet? <a class="login" href="/create_account"> Create account</a></label>
                     </div>
 
-                    <div>
-                        <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>
-                        <button class="cancel-btn" type="submit">Accept</button>
-                    </div>
-
-
-                </form>
-
-                <div class="account">
-                    <label for="">Not a member yet? <a class="login" href="/create_account"> Create account</a></label>
                 </div>
 
-            </div>
 
+            </section>
+        </div>
 
-        </section>
     </div>
-
-</div>
 {% endblock %}
