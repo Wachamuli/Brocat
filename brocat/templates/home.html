@@ -3,17 +3,16 @@
 {% block title %}Home{% endblock %}
 
 {% block main %}
-<h1>Welcome home, {{user}}.</h1>
+    <h1>Welcome home, {{user}}.</h1>
 
-<h3>Your uploaded brocats are:</h3>
-<div>
-    {% with brocats = user_brocats %}
-    {% for brocat in brocats %}
-    <ul>
-        <li>{{brocat}}</li>
-    </ul>
-    {% endfor %}
-    {% endwith %}
-</div>
-
+    <h3>Your uploaded brocats are:</h3>
+    <div>
+        {% with brocats = user_brocats %}
+            {% for brocat in brocats %}
+            <ul>
+                <li>{{brocat}}</li>
+            </ul>
+            {% endfor %}
+        {% endwith %}
+    </div>
 {% endblock main %}

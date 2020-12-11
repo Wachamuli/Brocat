@@ -1,4 +1,4 @@
-{% from "macros.html" import render_field, flashed_messages %}
+{% from "macros.html" import auth_form_field, flashed_messages %}
 
 {% extends "layout.html" %}
 
@@ -18,8 +18,8 @@
                     <form class="form" method="POST" novalidate>
                         {{form.csrf_token}}
                         <div>
-                            {{ render_field(form.username, placeholder='Enter your username', autofocus=True) }}
-                            {{ render_field(form.password, placeholder='Type your password')}}
+                            {{ auth_form_field(form.username, placeholder='Enter your username', autofocus=True) }}
+                            {{ auth_form_field(form.password, placeholder='Type your password')}}
                             <div>
                                 <div>
                                     {{ form.remember.label }} {{ form.remember }}

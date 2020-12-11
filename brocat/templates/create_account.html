@@ -1,4 +1,4 @@
-{% from "macros.html" import render_field %}
+{% from "macros.html" import auth_form_field %}
 
 {% extends "layout.html" %}
 
@@ -16,26 +16,21 @@
                 <form class="form" action="/create_account" method="POST" novalidate>
                     {{form.csrf_token}}
                     <div>
-                        {{ render_field(form.email, placeholder="Enter an email", autofocus=True) }}
-                        {{ render_field(form.username, placeholder="Create an username")}}
-                        {{ render_field(form.password, placeholder="Type a password")}}
-                        {{ render_field(form.confirm_password, placeholder="Retype your password") }}
+                        {{ auth_form_field(form.email, placeholder="Enter an email", autofocus=True) }}
+                        {{ auth_form_field(form.username, placeholder="Create an username")}}
+                        {{ auth_form_field(form.password, placeholder="Type a password")}}
+                        {{ auth_form_field(form.confirm_password, placeholder="Retype your password") }}
                     </div>
                     <div>
                         <button class="ok-btn" type="button" onclick="window.location='/'">Cancel</button>
                         <button class="cancel-btn" type="submit">Accept</button>
                     </div>
-
-                    
                 </form>
 
                 <div  class="account" >
                     <label for="">Already have an account? <a class="login" href="/login"> Login</a></label>
                 </div>
-                
             </div>
-
-
         </section>
     </div>
 
