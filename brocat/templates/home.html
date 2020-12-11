@@ -8,11 +8,15 @@
     <h3>Your uploaded brocats are:</h3>
     <div>
         {% with brocats = user_brocats %}
-            {% for brocat in brocats %}
-            <ul>
-                <li>{{brocat}}</li>
-            </ul>
-            {% endfor %}
+            {% if brocats %}
+                {% for brocat in brocats %}
+                <ul>
+                    <li>{{brocat}}</li>
+                </ul>
+                {% endfor %}
+            {% else %}
+                <h4>No Brocats uploaded yet.</h4>
+            {% endif %}
         {% endwith %}
     </div>
 {% endblock main %}

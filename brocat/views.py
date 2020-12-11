@@ -130,6 +130,10 @@ def upload_brocat():
     return render_template('upload_brocat.html', form=upload_form)
 
 
+@main.route('/test')
+def test():
+    return render_template('test.html')
+
 # @login_manager.unauthorized_handler
 # def unauthorized():
 #     pass

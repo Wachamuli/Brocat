@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_login import LoginManager
 
 
 def create_app():
@@ -16,6 +15,7 @@ def create_app():
         from brocat.database import init_db
         init_db()
 
+        from flask_login import LoginManager
         login_manager = LoginManager()
         login_manager.init_app(app)
         login_manager.login_view = 'main.login'
