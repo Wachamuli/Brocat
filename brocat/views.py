@@ -20,9 +20,10 @@ def index():
     total_brocats = Brocats.query.count()
     encontered_list = []
     for _ in range(0, 20):
-        rand = random.randint(0, total_brocats)
+        rand = random.randint(1, total_brocats)
         brocat = Brocats.query.filter_by(id=rand).first()
         encontered_list.append(brocat)
+
     
     return render_template('index.html', brocats_list=encontered_list)
 
@@ -108,7 +109,7 @@ def upload_brocat():
 
         thumb_path = os.path.join(static_folder, thumbnail_filename)
         aud_path = os.path.join(static_folder, audio_filename)
-        
+
         thumbnail.save(thumb_path)
         audio.save(aud_path)
 
@@ -122,7 +123,8 @@ def upload_brocat():
         try:
             db_session.add(new_brocat)
             db_session.commit()
-            return 'Uploaded'
+            flash('Uploaded Brocat')
+            return redirect('/')
         except:
             db_session.rollback()
             return 'Error in the db'

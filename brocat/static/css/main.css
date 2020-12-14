@@ -55,6 +55,7 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
+    margin-bottom: 3%;
 }
 
 .nested-grid {
