@@ -95,9 +95,7 @@ def home():
 @main.route('/home/upload_brocat', methods=['GET', 'POST'])
 @login_required
 def upload_brocat():
-    img_folder = app.config['IMAGES_FOLDER']
-    aud_folder = app.config['AUDIOS_FOLDER']
-
+    static_folder = app.config['STATIC_FOLDER']
     upload_form = UploadBrocatForm()
     if upload_form.validate_on_submit():
         title = upload_form.title.data
@@ -107,15 +105,17 @@ def upload_brocat():
 
         thumbnail_filename = secure_filename(thumbnail.filename)
         audio_filename = secure_filename(audio.filename)
-        thumb_path = os.path.join(img_folder, thumbnail_filename)
-        aud_path = os.path.join(aud_folder, audio_filename)
+
+        thumb_path = os.path.join(static_folder, thumbnail_filename)
+        aud_path = os.path.join(static_folder, audio_filename)
+        
         thumbnail.save(thumb_path)
         audio.save(aud_path)
 
         new_brocat = Brocats(
             title,
-            thumb_path,
-            aud_path,
+            thumbnail_filename,
+            audio_filename,
             description
         )
 
@@ -129,10 +129,6 @@ def upload_brocat():
 
     return render_template('upload_brocat.html', form=upload_form)
 
-
-@main.route('/test')
-def test():
-    return render_template('test.html')
 
 # @login_manager.unauthorized_handler
 # def unauthorized():
