@@ -24,7 +24,7 @@
             <div class="brocat-display">
                 <div class="brocat-container">
                     <a href="{{ url_for('main.watch', brocat_id=brocat.id)}}">
-                        <image class="brocat-img" src="{{ url_for('static', filename=brocat.thumbnail) }}">
+                        <image class="brocat-img" src="{{ url_for('main.get_img', imgname=brocat.thumbnail) }}">
                         <h4>{{brocat.title}}</h6>
                         <p>{{brocat.description}}</p>
                     </a>

@@ -2,34 +2,44 @@ import os
 import random
 
 from flask import render_template, redirect, flash, request, \
-    Blueprint, abort, current_app as app, jsonify
+    Blueprint, abort, current_app as app, jsonify, send_from_directory, \
+    url_for
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
 from urllib.parse import urlparse, urljoin
+from jinja2 import TemplateNotFound
 
 from brocat.database import db_session
-from brocat.models import UserSchema, BrocatSchema
+from brocat.models import Users, Brocats
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 main = Blueprint('main', __name__)
 
 
+def _render_template(template, **context):
+    try:
+        return render_template(template, **context)
+    except TemplateNotFound:
+        print(template)
+        abort(404)
+
+
 @main.route('/')
 def index():
-    total_brocats = BrocatSchema.query.count()
+    total_brocats = Brocats.query.count()
     encontered_list = set()
     for _ in range(0, total_brocats):
         rand = random.randint(1, total_brocats)
-        brocat = BrocatSchema.query.filter_by(id=rand).first()
+        brocat = Brocats.query.filter_by(id=rand).first()
         encontered_list.add(brocat)
 
-    return render_template('index.html', brocats_list=encontered_list)
+    return _render_template('index.html', brocats_list=encontered_list)
 
 
 @main.route('/watch=<int:brocat_id>')
 def watch(brocat_id):
-    brocat = BrocatSchema.query.filter_by(id=brocat_id).first()
+    brocat = Brocats.query.filter_by(id=brocat_id).first()
     if brocat:
         brocat_to_watch = {
             "Brocat info": {
@@ -45,6 +55,7 @@ def watch(brocat_id):
                 "author_id": brocat.author.id,
             }
         }
+
         return jsonify(brocat_to_watch)
 
     return 'No available'
@@ -54,7 +65,7 @@ def watch(brocat_id):
 def create_account():
     ca_form = CreateAccountForm()
     if ca_form.validate_on_submit():
-        new_user = UserSchema(
+        new_user = Users(
             ca_form.email.data,
             ca_form.username.data,
             ca_form.password.data
@@ -68,7 +79,7 @@ def create_account():
             db_session.rollback()
             return 'Error in the db'
 
-    return render_template('create_account.html', form=ca_form)
+    return _render_template('create_account.html', form=ca_form)
 
 
 def is_safe_url(target):
@@ -94,7 +105,7 @@ def login():
 
         return redirect(next or '/')
 
-    return render_template('login.html', form=log_form)
+    return _render_template('login.html', form=log_form)
 
 
 @main.route('/logout')
@@ -112,15 +123,17 @@ def home():
     for brocat in current_user.brocats:
         user_brocats.append(brocat.title)
 
-    return render_template('home.html', user=current_user, user_brocats=user_brocats)
+    return _render_template('home.html', user=current_user, user_brocats=user_brocats)
 
 
 @main.route('/home/upload_brocat', methods=['GET', 'POST'])
 @login_required
 def upload_brocat():
-    static_folder = app.config['STATIC_FOLDER']
     upload_form = UploadBrocatForm()
     if upload_form.validate_on_submit():
+        img_folder = app.config['IMAGES_FOLDER']
+        aud_folder = app.config['AUDIOS_FOLDER']
+
         title = upload_form.title.data
         thumbnail = upload_form.thumbnail.data
         audio = upload_form.audio.data
@@ -129,13 +142,13 @@ def upload_brocat():
         thumbnail_filename = secure_filename(thumbnail.filename)
         audio_filename = secure_filename(audio.filename)
 
-        thumb_path = os.path.join(static_folder, thumbnail_filename)
-        aud_path = os.path.join(static_folder, audio_filename)
+        thumb_path = os.path.join(img_folder, thumbnail_filename)
+        aud_path = os.path.join(aud_folder, audio_filename)
 
         thumbnail.save(thumb_path)
         audio.save(aud_path)
 
-        new_brocat = BrocatSchema(
+        new_brocat = Brocats(
             title,
             thumbnail_filename,
             audio_filename,
@@ -151,14 +164,24 @@ def upload_brocat():
             db_session.rollback()
             return 'Error in the db'
 
-    return render_template('upload_brocat.html', form=upload_form)
+    return _render_template('upload_brocat.html', form=upload_form)
 
+
+@main.route('/get_aud/<audname>')
+def get_aud(audname):
+    return send_from_directory(app.config['AUDIOS_FOLDER'], filename=audname)
+
+
+@main.route('/get_img/<imgname>')
+def get_img(imgname):
+    return send_from_directory(app.config['IMAGES_FOLDER'], filename=imgname)
 
 # @login_manager.unauthorized_handler
 # def unauthorized():
 #     pass
 
 
-# @main.errorhandler(404)
-# def error():
-#     pass
+@main.errorhandler(404)
+def error(e):
+    return 'This is a pretty custom message if the template is not found, \
+        the famous 404 error'

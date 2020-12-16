@@ -6,7 +6,7 @@ from bcrypt import hashpw, checkpw, gensalt
 from brocat.database import Base
 
 
-class UserSchema(Base, UserMixin):
+class Users(Base, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -14,7 +14,7 @@ class UserSchema(Base, UserMixin):
     username = Column(String(16), nullable=False, unique=True)
     __password = Column('password', String(16), nullable=False)
 
-    brocats = relationship('BrocatSchema', back_populates='author')
+    brocats = relationship('Brocats', back_populates='author')
 
     def __init__(self, email, username, password):
         self.e_mail = email
@@ -37,7 +37,7 @@ class UserSchema(Base, UserMixin):
         return self.username
 
 
-class BrocatSchema(Base):
+class Brocats(Base):
     __tablename__ = 'brocats'
 
     id = Column(Integer, primary_key=True)
@@ -47,7 +47,7 @@ class BrocatSchema(Base):
     description = Column(String(500))
 
     users_id = Column(Integer, ForeignKey('users.id'))
-    author = relationship('UserSchema', back_populates='brocats')
+    author = relationship('Users', back_populates='brocats')
 
     def __init__(self, title, thumbnail, audio, description):
         self.title = title
