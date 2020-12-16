@@ -28,11 +28,11 @@ def _render_template(template, **context):
 @main.route('/')
 def index():
     total_brocats = Brocats.query.count()
-    encontered_list = set()
+    encontered_list = []
     for _ in range(0, total_brocats):
         rand = random.randint(1, total_brocats)
         brocat = Brocats.query.filter_by(id=rand).first()
-        encontered_list.add(brocat)
+        encontered_list.append(brocat)
 
     return _render_template('index.html', brocats_list=encontered_list)
 
@@ -55,8 +55,8 @@ def watch(brocat_id):
                 "author_id": brocat.author.id,
             }
         }
-
-        return jsonify(brocat_to_watch)
+        
+        return _render_template('watch.html', brocat=brocat)
 
     return 'No available'
 
@@ -110,9 +110,10 @@ def login():
 
 @main.route('/logout')
 def logout():
-    logout_user()
     if current_user.is_authenticated:
         flash('Logout successfully')
+
+    logout_user()
     return redirect('/login')
 
 

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ brocat.title }} - Brocat{% endblock %}
+
+{% block main %}
+
+    <h1>{{ brocat.title }}</h1>
+    <img src="{{ url_for('main.get_img', imgname=brocat.thumbnail) }}">
+    <audio controls>
+        <source src="{{ url_for('main.get_aud', audname=brocat.audio) }}">
+    </audio>
+
+{% endblock main %}
