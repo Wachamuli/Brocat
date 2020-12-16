@@ -2,14 +2,14 @@ import os
 import random
 
 from flask import render_template, redirect, flash, request, \
-    Blueprint, abort, current_app as app
+    Blueprint, abort, current_app as app, jsonify
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
 from urllib.parse import urlparse, urljoin
 
 from brocat.database import db_session
-from brocat.models import Users, Brocats
+from brocat.models import UserSchema, BrocatSchema
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 main = Blueprint('main', __name__)
@@ -17,22 +17,44 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    total_brocats = Brocats.query.count()
-    encontered_list = []
-    for _ in range(0, 20):
+    total_brocats = BrocatSchema.query.count()
+    encontered_list = set()
+    for _ in range(0, total_brocats):
         rand = random.randint(1, total_brocats)
-        brocat = Brocats.query.filter_by(id=rand).first()
-        encontered_list.append(brocat)
+        brocat = BrocatSchema.query.filter_by(id=rand).first()
+        encontered_list.add(brocat)
 
-    
     return render_template('index.html', brocats_list=encontered_list)
+
+
+@main.route('/watch=<int:brocat_id>')
+def watch(brocat_id):
+    brocat = BrocatSchema.query.filter_by(id=brocat_id).first()
+    if brocat:
+        brocat_to_watch = {
+            "Brocat info": {
+                'title': brocat.title,
+                'thumbnail': brocat.thumbnail,
+                'audio': brocat.audio,
+                'description': brocat.description,
+                'author': brocat.author.__str__(),
+                'users_id': brocat.users_id,
+            },
+            "Author info": {
+                "author_email": brocat.author.e_mail,
+                "author_id": brocat.author.id,
+            }
+        }
+        return jsonify(brocat_to_watch)
+
+    return 'No available'
 
 
 @main.route('/create_account', methods=['GET', 'POST'])
 def create_account():
     ca_form = CreateAccountForm()
     if ca_form.validate_on_submit():
-        new_user = Users(
+        new_user = UserSchema(
             ca_form.email.data,
             ca_form.username.data,
             ca_form.password.data
@@ -62,11 +84,11 @@ def login():
     if log_form.validate_on_submit():
         user = log_form.check_user.data
         remember = log_form.remember.data
-        
+
         login_user(user, remember=remember)
         flash('Logged succesfully.')
         next = request.args.get('next')
-        
+
         if not is_safe_url(next):
             return abort(400)
 
@@ -89,7 +111,7 @@ def home():
     user_brocats = []
     for brocat in current_user.brocats:
         user_brocats.append(brocat.title)
-        
+
     return render_template('home.html', user=current_user, user_brocats=user_brocats)
 
 
@@ -113,7 +135,7 @@ def upload_brocat():
         thumbnail.save(thumb_path)
         audio.save(aud_path)
 
-        new_brocat = Brocats(
+        new_brocat = BrocatSchema(
             title,
             thumbnail_filename,
             audio_filename,

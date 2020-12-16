@@ -21,10 +21,10 @@ def create_app():
         login_manager.login_view = 'main.login'
         login_manager.login_message = 'You need to login first.'
 
-        from brocat.models import Users
+        from brocat.models import UserSchema
         @login_manager.user_loader
         def load_user(user_id):
-            return Users.query.get(int(user_id))
+            return UserSchema.query.get(int(user_id))
 
         from brocat.views import main as main_blueprint
         app.register_blueprint(main_blueprint)

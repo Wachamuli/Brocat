@@ -73,6 +73,10 @@
     display: flex;
 }
 
+.brocat-display a {
+    color: black;
+}
+
 .brocat-container img{
     width: 232px;
     height: 102px;

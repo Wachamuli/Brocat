@@ -6,15 +6,15 @@ from bcrypt import hashpw, checkpw, gensalt
 from brocat.database import Base
 
 
-class Users(Base, UserMixin):
-    __tablename__ = 'Users'
+class UserSchema(Base, UserMixin):
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     e_mail = Column('e-mail', String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
     __password = Column('password', String(16), nullable=False)
 
-    brocats = relationship('Brocats', back_populates='author')
+    brocats = relationship('BrocatSchema', back_populates='author')
 
     def __init__(self, email, username, password):
         self.e_mail = email
@@ -37,8 +37,8 @@ class Users(Base, UserMixin):
         return self.username
 
 
-class Brocats(Base):
-    __tablename__ = 'Brocats'
+class BrocatSchema(Base):
+    __tablename__ = 'brocats'
 
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=True)
@@ -46,13 +46,13 @@ class Brocats(Base):
     audio = Column(String(200), nullable=False)
     description = Column(String(500))
 
-    users_id = Column(Integer, ForeignKey('Users.id'))
-    author = relationship('Users', back_populates='brocats')
+    users_id = Column(Integer, ForeignKey('users.id'))
+    author = relationship('UserSchema', back_populates='brocats')
 
     def __init__(self, title, thumbnail, audio, description):
         self.title = title
         self.thumbnail = thumbnail
         self.audio = audio
         self.description = description
-        self.users_id = current_user.id
+        self.author = current_user
     

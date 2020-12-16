@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField, FileField, TextAreaField, \
 from wtforms.validators import InputRequired, Regexp, Email, EqualTo, Length, \
     ValidationError
 
-from brocat.models import Users
+from brocat.models import UserSchema
 
 
 # * CUSTOM VALIDATOR
@@ -73,12 +73,12 @@ class CreateAccountForm(FlaskForm):
     ) 
 
     def validate_email(form, email):
-        email_exists = Users.query.filter_by(e_mail=email.data).first()
+        email_exists = UserSchema.query.filter_by(e_mail=email.data).first()
         if email_exists:
             raise ValidationError('Email already exists')
     
     def validate_username(form, username):
-        user_exists = Users.query.filter_by(username=username.data).first() 
+        user_exists = UserSchema.query.filter_by(username=username.data).first() 
         if user_exists:
             raise ValidationError('Username already exists')
 
@@ -94,7 +94,7 @@ class LoginForm(FlaskForm):
 
     check_user = Field()
     def validate_check_user(self, form):
-        user_exists = Users.query.filter_by(username=self.username.data).first()
+        user_exists = UserSchema.query.filter_by(username=self.username.data).first()
         if not(user_exists and user_exists.check_psw(self.password.data)):
             raise ValidationError('Invalid username or password.')
         

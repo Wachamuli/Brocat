@@ -5,12 +5,12 @@
 {% block title %}Brocat{% endblock %}
 
 {%block header %}
-    {{ flashed_messages() }}
+{{ flashed_messages() }}
 
-    <div class="btn-wrapper">
-        <button class="login-btn" type="button" onclick="window.location='/login'">Login</button>
-        <button class="create-btn" type="button" onclick="window.location='/create_account'">Create Account</button>
-    </div>
+<div class="btn-wrapper">
+    <button class="login-btn" type="button" onclick="window.location='/login'">Login</button>
+    <button class="create-btn" type="button" onclick="window.location='/create_account'">Create Account</button>
+</div>
 {% endblock header%}
 
 {% block main %}
@@ -19,17 +19,20 @@
     <div class="nested-grid">
         {% with li_brocats = brocats_list %}
         {% if li_brocats %}
-        {% for brocat in li_brocats %}
+            {% for brocat in li_brocats %}
 
-        <div class="brocat-display">
-            <div class="brocat-container">
-                <image class="brocat-img" src="{{ url_for('static', filename=brocat.thumbnail) }}">
-                    <h4>{{brocat.title}}</h6>
+            <div class="brocat-display">
+                <div class="brocat-container">
+                    <a href="{{ url_for('main.watch', brocat_id=brocat.id)}}">
+                        <image class="brocat-img" src="{{ url_for('static', filename=brocat.thumbnail) }}">
+                        <h4>{{brocat.title}}</h6>
                         <p>{{brocat.description}}</p>
+                    </a>
+                </div>
             </div>
-        </div>
-
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h1>No brocats Available</h1>
         {% endif %}
         {% endwith %}
     </div>
