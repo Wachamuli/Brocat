@@ -2,8 +2,8 @@ import os
 import random
 
 from flask import render_template, redirect, flash, request, \
-    Blueprint, abort, current_app as app, jsonify, send_from_directory, \
-    url_for
+    Blueprint, abort, current_app as app, send_from_directory, \
+        jsonify
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
@@ -11,7 +11,7 @@ from urllib.parse import urlparse, urljoin
 from jinja2 import TemplateNotFound
 
 from brocat.database import db_session
-from brocat.models import Users, Brocats
+from brocat.models import Users, Brocats, users_schema, brocats_schema
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 main = Blueprint('main', __name__)
@@ -21,7 +21,6 @@ def _render_template(template, **context):
     try:
         return render_template(template, **context)
     except TemplateNotFound:
-        print(template)
         abort(404)
 
 
@@ -39,23 +38,23 @@ def index():
 
 @main.route('/watch=<int:brocat_id>')
 def watch(brocat_id):
-    brocat = Brocats.query.filter_by(id=brocat_id).first()
+    brocat = Brocats.query.get(brocat_id)
     if brocat:
-        brocat_to_watch = {
-            "Brocat info": {
-                'title': brocat.title,
-                'thumbnail': brocat.thumbnail,
-                'audio': brocat.audio,
-                'description': brocat.description,
-                'author': brocat.author.__str__(),
-                'users_id': brocat.users_id,
-            },
-            "Author info": {
-                "author_email": brocat.author.e_mail,
-                "author_id": brocat.author.id,
-            }
-        }
-        
+        # brocat_to_watch = {
+        #     "Brocat info": {
+        #         'title': brocat.title,
+        #         'thumbnail': brocat.thumbnail,
+        #         'audio': brocat.audio,
+        #         'description': brocat.description,
+        #         'author': brocat.author.__str__(),
+        #         'users_id': brocat.users_id,
+        #     },
+        #     "Author info": {
+        #         "author_email": brocat.author.e_mail,
+        #         "author_id": brocat.author.id,
+        #     }
+        # }
+
         return _render_template('watch.html', brocat=brocat)
 
     return 'No available'
@@ -177,12 +176,28 @@ def get_aud(audname):
 def get_img(imgname):
     return send_from_directory(app.config['IMAGES_FOLDER'], filename=imgname)
 
-# @login_manager.unauthorized_handler
-# def unauthorized():
+
+@main.route('/api/users')
+def all_users():
+    all_users = Users.query.all()
+    dumped = users_schema.dump(all_users)
+    return jsonify(dumped)
+
+
+@main.route('/api/brocats')
+def all_brocats():
+    all_brocats = Brocats.query.all()
+    dumped = brocats_schema.dump(all_brocats)
+    return jsonify(dumped)
+
+
+# @main.route('/api/user/<int:id>')
+# def get_user():
 #     pass
 
 
 @main.errorhandler(404)
 def error(e):
-    return 'This is a pretty custom message if the template is not found, \
-        the famous 404 error'
+    return f'<h1>{e}</h1> \
+            <div><h2>This is a pretty custom message if the template is not found, \
+            the famous 404 error</h2></div>'

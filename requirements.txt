@@ -14,6 +14,8 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
+marshmallow==3.9.1
+marshmallow-sqlalchemy==0.24.1
 mccabe==0.6.1
 pycodestyle==2.6.0
 pycparser==2.20

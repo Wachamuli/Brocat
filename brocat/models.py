@@ -2,6 +2,7 @@ from flask_login import UserMixin, current_user
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from bcrypt import hashpw, checkpw, gensalt
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 
 from brocat.database import Base
 
@@ -55,4 +56,35 @@ class Brocats(Base):
         self.audio = audio
         self.description = description
         self.author = current_user
-    
+
+
+# * SCHEMAS
+
+class UsersSchema(SQLAlchemySchema):
+    class Meta:
+        model = Users
+
+    id = auto_field()
+    e_mail = auto_field()
+    username = auto_field()
+    brocats = auto_field()
+
+
+user_schema = UsersSchema()
+users_schema = UsersSchema(many=True)
+
+
+class BrocatsSchema(SQLAlchemySchema):
+    class Meta:
+        model = Brocats
+
+    title = auto_field()
+    thumbnail = auto_field()
+    audio = auto_field()
+    description = auto_field()
+    users_id = auto_field()
+    author = auto_field()
+
+
+brocat_schema = BrocatsSchema()
+brocats_schema = BrocatsSchema(many=True)
