@@ -17,8 +17,8 @@ class Users(Base, UserMixin):
 
     brocats = relationship('Brocats', back_populates='author')
 
-    def __init__(self, email, username, password):
-        self.e_mail = email
+    def __init__(self, e_mail, username, password=None, __Users_password=None):
+        self.e_mail = e_mail
         self.username = username
         self.password = password
 
@@ -50,12 +50,12 @@ class Brocats(Base):
     users_id = Column(Integer, ForeignKey('users.id'))
     author = relationship('Users', back_populates='brocats')
 
-    def __init__(self, title, thumbnail, audio, description):
+    def __init__(self, title, thumbnail, audio, description, users_id=None, author=current_user):
         self.title = title
         self.thumbnail = thumbnail
         self.audio = audio
         self.description = description
-        self.author = current_user
+        self.author = author
 
 
 # * SCHEMAS

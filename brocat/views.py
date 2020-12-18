@@ -21,20 +21,20 @@ main = Blueprint('main', __name__)
 def _render_template(template, **context):
     try:
         return render_template(template, **context)
-    except TemplateNotFound:
-        abort(404)
+    except TemplateNotFound as err:
+        abort(404, description=err)
 
 
 @main.route('/')
 def index():
-    total_brocats = Brocats.query.count()
-    encontered_list = []
-    for _ in range(0, total_brocats):
-        rand = random.randint(2, total_brocats)
-        brocat = Brocats.query.filter_by(id=rand).first()
-        encontered_list.append(brocat)
+    # total_brocats = Brocats.query.count()
+    # encontered_list = []
+    # for _ in range(0, total_brocats):
+    #     rand = random.randint(2, total_brocats)
+    #     brocat = Brocats.query.filter_by(id=rand).first()
+    #     encontered_list.append(brocat)
 
-    return _render_template('index.html', brocats_list=encontered_list)
+    return _render_template('index.html') # , brocats_list=encontered_list
 
 
 @main.route('/watch=<int:brocat_id>')
@@ -197,7 +197,7 @@ def get_brocat(id):
 
 
 @main.route('/api/users/post', methods=['POST'])
-def update_user():
+def post_a_user():
     # FIXME:
     user_data = user_schema.load(request.json, session=db_session)
     
@@ -210,9 +210,8 @@ def update_user():
         return 'Error in the db'
 
 
-@main.route('/api/users/post', methods=['POST'])
-def update_user():
-    # FIXME:
+@main.route('/api/brocats/post', methods=['POST'])
+def post_a_brocat():
     brocat_data = brocat_schema.load(request.json, session=db_session)
 
     try:
@@ -226,8 +225,12 @@ def update_user():
 
 @main.route('/api/users/<int:id>', methods=['DELETE'])
 def delelte_user(id):
+    user_to_del = Users.query.filter_by(id=id).first()
+    if not user_to_del:
+        return jsonify('User not found')
+
     try:
-        Users.query.filter_by(id=id).delete()
+        db_session.delete(user_to_del)
         db_session.commit()
         return jsonify('User deleted!')
     except:
@@ -237,8 +240,12 @@ def delelte_user(id):
 
 @main.route('/api/brocats/<int:id>', methods=['DELETE'])
 def delete_brocat(id):
+    brocat_to_del = Brocats.query.filter_by(id=id).first()
+    if not brocat_to_del:
+        return jsonify('Brocat not found!')
+    
     try:
-        Brocats.query.filter_by(id=id).delete()
+        db_session.delete(brocat_to_del)
         db_session.commit()
         return jsonify('Brocat deleted!')
     except:
@@ -246,12 +253,8 @@ def delete_brocat(id):
         return 'Err in the db'
 
 
-
-
-
-
 @main.errorhandler(404)
-def error(e):
+def resource_not_found(e):
     return f'<h1>{e}</h1> \
             <div><h2>This is a pretty custom message if the template is not found, \
-            the famous 404 error</h2></div>'
+            the famous 404 error</h2></div>', 404
