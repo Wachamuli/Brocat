@@ -63,10 +63,12 @@ class Brocats(Base):
 class UsersSchema(SQLAlchemySchema):
     class Meta:
         model = Users
+        load_instance = True
 
     id = auto_field()
-    e_mail = auto_field()
+    email = auto_field(column_name='e_mail')
     username = auto_field()
+    password = auto_field(column_name='_Users__password') 
     brocats = auto_field()
 
 
@@ -77,7 +79,9 @@ users_schema = UsersSchema(many=True)
 class BrocatsSchema(SQLAlchemySchema):
     class Meta:
         model = Brocats
+        load_instance = True
 
+    id = auto_field()
     title = auto_field()
     thumbnail = auto_field()
     audio = auto_field()

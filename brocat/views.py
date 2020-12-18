@@ -11,7 +11,8 @@ from urllib.parse import urlparse, urljoin
 from jinja2 import TemplateNotFound
 
 from brocat.database import db_session
-from brocat.models import Users, Brocats, users_schema, brocats_schema
+from brocat.models import Users, Brocats, users_schema, brocats_schema, \
+    user_schema, brocat_schema
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
 main = Blueprint('main', __name__)
@@ -29,7 +30,7 @@ def index():
     total_brocats = Brocats.query.count()
     encontered_list = []
     for _ in range(0, total_brocats):
-        rand = random.randint(1, total_brocats)
+        rand = random.randint(2, total_brocats)
         brocat = Brocats.query.filter_by(id=rand).first()
         encontered_list.append(brocat)
 
@@ -40,21 +41,6 @@ def index():
 def watch(brocat_id):
     brocat = Brocats.query.get(brocat_id)
     if brocat:
-        # brocat_to_watch = {
-        #     "Brocat info": {
-        #         'title': brocat.title,
-        #         'thumbnail': brocat.thumbnail,
-        #         'audio': brocat.audio,
-        #         'description': brocat.description,
-        #         'author': brocat.author.__str__(),
-        #         'users_id': brocat.users_id,
-        #     },
-        #     "Author info": {
-        #         "author_email": brocat.author.e_mail,
-        #         "author_id": brocat.author.id,
-        #     }
-        # }
-
         return _render_template('watch.html', brocat=brocat)
 
     return 'No available'
@@ -180,20 +166,88 @@ def get_img(imgname):
 @main.route('/api/users')
 def all_users():
     all_users = Users.query.all()
-    dumped = users_schema.dump(all_users)
-    return jsonify(dumped)
+    response = users_schema.dump(all_users)
+    return jsonify(response)
+
+
+@main.route('/api/users/<int:id>')
+def get_user(id):
+    user = Users.query.get(id)
+    response = user_schema.dump(user)
+    if len(response) == 0:
+        response = 'User not found!'
+
+    return response
 
 
 @main.route('/api/brocats')
 def all_brocats():
     all_brocats = Brocats.query.all()
-    dumped = brocats_schema.dump(all_brocats)
-    return jsonify(dumped)
+    response = brocats_schema.dump(all_brocats)
+    return jsonify(response)
+
+@main.route('/api/brocats/<int:id>')
+def get_brocat(id):
+    brocat = Brocats.query.get(id)
+    response = brocat_schema.dump(brocat)
+    if len(response) == 0:
+        response = 'Brocat not found!'
+    
+    return response
 
 
-# @main.route('/api/user/<int:id>')
-# def get_user():
-#     pass
+@main.route('/api/users/post', methods=['POST'])
+def update_user():
+    # FIXME:
+    user_data = user_schema.load(request.json, session=db_session)
+    
+    try:
+        db_session.add(user_data)
+        db_session.commit()
+        return jsonify('Added')
+    except:
+        db_session.rollback()
+        return 'Error in the db'
+
+
+@main.route('/api/users/post', methods=['POST'])
+def update_user():
+    # FIXME:
+    brocat_data = brocat_schema.load(request.json, session=db_session)
+
+    try:
+        db_session.add(brocat_data)
+        db_session.commit()
+        return jsonify('Added')
+    except:
+        db_session.rollback()
+        return 'Error in the db'
+
+
+@main.route('/api/users/<int:id>', methods=['DELETE'])
+def delelte_user(id):
+    try:
+        Users.query.filter_by(id=id).delete()
+        db_session.commit()
+        return jsonify('User deleted!')
+    except:
+        db_session.rollback()
+        return 'Err in the db'
+
+
+@main.route('/api/brocats/<int:id>', methods=['DELETE'])
+def delete_brocat(id):
+    try:
+        Brocats.query.filter_by(id=id).delete()
+        db_session.commit()
+        return jsonify('Brocat deleted!')
+    except:
+        db_session.rollback()
+        return 'Err in the db'
+
+
+
+
 
 
 @main.errorhandler(404)
