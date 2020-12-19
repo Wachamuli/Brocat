@@ -3,7 +3,7 @@ import random
 
 from flask import render_template, redirect, flash, request, \
     Blueprint, abort, current_app as app, send_from_directory, \
-        jsonify
+    jsonify
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from werkzeug.utils import secure_filename
@@ -11,7 +11,7 @@ from urllib.parse import urlparse, urljoin
 from jinja2 import TemplateNotFound
 
 from brocat.database import db_session
-from brocat.models import Users, Brocats, users_schema, brocats_schema, \
+from brocat.models import User, Brocat, users_schema, brocats_schema, \
     user_schema, brocat_schema
 from brocat.forms import CreateAccountForm, LoginForm, UploadBrocatForm
 
@@ -27,19 +27,19 @@ def _render_template(template, **context):
 
 @main.route('/')
 def index():
-    # total_brocats = Brocats.query.count()
-    # encontered_list = []
-    # for _ in range(0, total_brocats):
-    #     rand = random.randint(2, total_brocats)
-    #     brocat = Brocats.query.filter_by(id=rand).first()
-    #     encontered_list.append(brocat)
+    total_brocats = Brocat.query.count()
+    encontered_list = []
+    for _ in range(0, total_brocats):
+        rand = random.randint(1, total_brocats)
+        brocat = Brocat.query.filter_by(id=rand).first()
+        encontered_list.append(brocat)
 
-    return _render_template('index.html') # , brocats_list=encontered_list
+    return _render_template('index.html', brocats_list=encontered_list)
 
 
 @main.route('/watch=<int:brocat_id>')
 def watch(brocat_id):
-    brocat = Brocats.query.get(brocat_id)
+    brocat = Brocat.query.get(brocat_id)
     if brocat:
         return _render_template('watch.html', brocat=brocat)
 
@@ -50,7 +50,7 @@ def watch(brocat_id):
 def create_account():
     ca_form = CreateAccountForm()
     if ca_form.validate_on_submit():
-        new_user = Users(
+        new_user = User(
             ca_form.email.data,
             ca_form.username.data,
             ca_form.password.data
@@ -134,7 +134,7 @@ def upload_brocat():
         thumbnail.save(thumb_path)
         audio.save(aud_path)
 
-        new_brocat = Brocats(
+        new_brocat = Brocat(
             title,
             thumbnail_filename,
             audio_filename,
@@ -163,44 +163,46 @@ def get_img(imgname):
     return send_from_directory(app.config['IMAGES_FOLDER'], filename=imgname)
 
 
+# * API
+
 @main.route('/api/users')
 def all_users():
-    all_users = Users.query.all()
+    all_users = User.query.all()
     response = users_schema.dump(all_users)
     return jsonify(response)
 
 
 @main.route('/api/users/<int:id>')
 def get_user(id):
-    user = Users.query.get(id)
+    user = User.query.get(id)
     response = user_schema.dump(user)
     if len(response) == 0:
         response = 'User not found!'
 
-    return response
+    return jsonify(response)
 
 
 @main.route('/api/brocats')
 def all_brocats():
-    all_brocats = Brocats.query.all()
+    all_brocats = Brocat.query.all()
     response = brocats_schema.dump(all_brocats)
     return jsonify(response)
 
+
 @main.route('/api/brocats/<int:id>')
 def get_brocat(id):
-    brocat = Brocats.query.get(id)
+    brocat = Brocat.query.get(id)
     response = brocat_schema.dump(brocat)
     if len(response) == 0:
         response = 'Brocat not found!'
-    
-    return response
+
+    return jsonify(response)
 
 
 @main.route('/api/users/post', methods=['POST'])
 def post_a_user():
-    # FIXME:
     user_data = user_schema.load(request.json, session=db_session)
-    
+
     try:
         db_session.add(user_data)
         db_session.commit()
@@ -225,7 +227,7 @@ def post_a_brocat():
 
 @main.route('/api/users/<int:id>', methods=['DELETE'])
 def delelte_user(id):
-    user_to_del = Users.query.filter_by(id=id).first()
+    user_to_del = User.query.filter_by(id=id).first()
     if not user_to_del:
         return jsonify('User not found')
 
@@ -240,10 +242,10 @@ def delelte_user(id):
 
 @main.route('/api/brocats/<int:id>', methods=['DELETE'])
 def delete_brocat(id):
-    brocat_to_del = Brocats.query.filter_by(id=id).first()
+    brocat_to_del = Brocat.query.filter_by(id=id).first()
     if not brocat_to_del:
         return jsonify('Brocat not found!')
-    
+
     try:
         db_session.delete(brocat_to_del)
         db_session.commit()

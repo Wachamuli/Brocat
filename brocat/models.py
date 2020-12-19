@@ -7,68 +7,66 @@ from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 from brocat.database import Base
 
 
-class Users(Base, UserMixin):
+class User(Base, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    e_mail = Column('e-mail', String(30), nullable=False, unique=True)
+    email = Column(String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
-    __password = Column('password', String(16), nullable=False)
+    password = Column(String(16), nullable=False)
 
-    brocats = relationship('Brocats', back_populates='author')
+    brocats = relationship('Brocat', back_populates='author')
 
-    def __init__(self, e_mail, username, password=None, __Users_password=None):
-        self.e_mail = e_mail
+    def __init__(self, email, username, password):
+        self.email = email
         self.username = username
-        self.password = password
+        self.password = User.hash_psw(password)
 
-    @property
-    def password(self):
-        return self.__password
-
-    @password.setter
-    def password(self, value):
-        hashed_psw = hashpw(value.encode('UTF-8'), gensalt())
-        self.__password = hashed_psw
+    @staticmethod
+    def hash_psw(psw):
+        hashed_psw = hashpw(psw.encode('UTF-8'), gensalt())
+        return hashed_psw
 
     def check_psw(self, psw):
-        return checkpw(psw.encode('UTF-8'), self.__password)
+        return checkpw(psw.encode('UTF-8'), self.password)
 
     def __repr__(self):
         return self.username
 
 
-class Brocats(Base):
+class Brocat(Base):
     __tablename__ = 'brocats'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String(100), nullable=True)
+    title = Column(String(100), nullable=False)
     thumbnail = Column(String(200), nullable=False)
     audio = Column(String(200), nullable=False)
     description = Column(String(500))
 
     users_id = Column(Integer, ForeignKey('users.id'))
-    author = relationship('Users', back_populates='brocats')
+    author = relationship('User', back_populates='brocats')
 
     def __init__(self, title, thumbnail, audio, description, users_id=None, author=current_user):
         self.title = title
         self.thumbnail = thumbnail
         self.audio = audio
         self.description = description
-        self.author = author
+        self.author = author      # Not recomendable to touch
+        self.users_id = users_id  # these. Only throught API.
 
 
 # * SCHEMAS
 
 class UsersSchema(SQLAlchemySchema):
     class Meta:
-        model = Users
+        model = User
         load_instance = True
 
     id = auto_field()
-    email = auto_field(column_name='e_mail')
+    email = auto_field()
     username = auto_field()
-    password = auto_field(column_name='_Users__password') 
+    password = auto_field()
+
     brocats = auto_field()
 
 
@@ -78,7 +76,7 @@ users_schema = UsersSchema(many=True)
 
 class BrocatsSchema(SQLAlchemySchema):
     class Meta:
-        model = Brocats
+        model = Brocat
         load_instance = True
 
     id = auto_field()
@@ -86,6 +84,7 @@ class BrocatsSchema(SQLAlchemySchema):
     thumbnail = auto_field()
     audio = auto_field()
     description = auto_field()
+
     users_id = auto_field()
     author = auto_field()
 
