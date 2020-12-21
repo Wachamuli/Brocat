@@ -13,7 +13,7 @@ class User(Base, UserMixin):
     id = Column(Integer, primary_key=True)
     email = Column(String(30), nullable=False, unique=True)
     username = Column(String(16), nullable=False, unique=True)
-    password = Column(String(16), nullable=False)
+    password = Column(String(16, convert_unicode=True), nullable=False)
 
     brocats = relationship('Brocat', back_populates='author')
 
@@ -46,13 +46,15 @@ class Brocat(Base):
     users_id = Column(Integer, ForeignKey('users.id'))
     author = relationship('User', back_populates='brocats')
 
-    def __init__(self, title, thumbnail, audio, description, users_id=None, author=current_user):
+    def __init__(self, title, thumbnail, audio, description):
         self.title = title
         self.thumbnail = thumbnail
         self.audio = audio
         self.description = description
-        self.author = author      # Not recomendable to touch
-        self.users_id = users_id  # these. Only throught API.
+        self.author = current_user      
+
+    def __repr__(self):
+        return self.title
 
 
 # * SCHEMAS

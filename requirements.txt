@@ -19,6 +19,7 @@ marshmallow-sqlalchemy==0.24.1
 mccabe==0.6.1
 pycodestyle==2.6.0
 pycparser==2.20
+PyJWT==1.7.1
 pylint==2.6.0
 pylint-flask==0.6
 pylint-plugin-utils==0.6
