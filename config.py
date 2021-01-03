@@ -28,7 +28,7 @@ class DevelopmentConfig(Config):
 
     USE_SESSION_FOR_NEXT = False
 
-    UPLOADS_FOLDER = '/home/wachadev/Programming/Python/brocat/brocat/uploads/'
+    UPLOADS_FOLDER = '/brocat/uploads/'
     IMAGES_FOLDER = UPLOADS_FOLDER + 'images/'
     AUDIOS_FOLDER = UPLOADS_FOLDER + 'audios/'
     ALLOWED_IMAGES_EXTENSIONS = frozenset({'jpg', 'jpeg', 'svg', 'png'})

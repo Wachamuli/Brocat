@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  flaskapp:
+    container_name: flaskapp
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: development
+  database:
+    image: keinos/sqlite3:latest

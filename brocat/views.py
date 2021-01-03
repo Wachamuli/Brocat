@@ -32,7 +32,7 @@ def _render_template(template, **context):
 def index():
     total_brocats = Brocat.query.count()
     encontered_list = []
-    for _ in range(0, total_brocats):
+    for _ in range(0, 20): # 20 is only a placeholder to total_brocats
         rand = random.randint(1, total_brocats)
         brocat = Brocat.query.filter_by(id=rand).first()
         encontered_list.append(brocat)

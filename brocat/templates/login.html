@@ -20,6 +20,11 @@
                         <div>
                             {{ auth_form_field(form.username, placeholder='Enter your username', autofocus=True) }}
                             {{ auth_form_field(form.password, placeholder='Type your password')}}
+                            {% for error in form.check_user.errors %}
+                                {% if error %}
+                                    <label class="err-msg">{{ error }}</label>
+                                {% endif %}
+                            {% endfor %}
                             <div>
                                 <div>
                                     {{ form.remember.label }} {{ form.remember }}

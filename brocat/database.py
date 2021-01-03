@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 engine = create_engine(
-    name_or_url='sqlite://///home/wachadev/Programming/Python/brocat/brocat/database/db_brocat.db', 
+    name_or_url='sqlite:///brocat/database/db_brocat.db', 
     connect_args={'check_same_thread': False}
 )
 db_session = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))

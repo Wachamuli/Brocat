@@ -92,7 +92,7 @@ class LoginForm(FlaskForm):
     )
     remember = BooleanField(label='Remember me?')
 
-    check_user = Field()
+    check_user = Field(None)
     def validate_check_user(self, form):
         user_exists = User.query.filter_by(username=self.username.data).first()
         if not(user_exists and user_exists.check_psw(self.password.data)):
